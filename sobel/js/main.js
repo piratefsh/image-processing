@@ -12,8 +12,9 @@ function init(){
     var canvasDimensions = canvas.getBoundingClientRect();
     var img = new Image();
     
-    img.src = 'img/noguchi01.jpg';
+    // img.src = 'img/noguchi01.jpg';
     // img.src = 'img/coins.jpg';
+    img.src = 'img/phillylove.jpg';
     img.onload = function(){
         imgWidth = canvasDimensions.width;
         imgHeight = this.height * canvasDimensions.width/this.width;
@@ -43,18 +44,17 @@ function getImageData(context){
 function arrToImageData(arr){
     var flatArr = [];
     for(var i = 0; i < arr.length; i++){
-        if(arr[i][4] == 1){
+        if(!arr[i][4]){
+            flatArr.push(255)
+            flatArr.push(255)
             flatArr.push(255)
         }
         else{
             flatArr.push(0)
+            flatArr.push(0)
+            flatArr.push(0)
         }
-            flatArr.push(0)
-            flatArr.push(0)
-            flatArr.push(255)
-        // for(var j = 0; j < arr[i].length; j++){
-        //     // flatArr.push(arr[i][j]);
-        // }
+        flatArr.push(255)
     }
 
     return new ImageData(new Uint8ClampedArray(flatArr), canvas.width);
@@ -77,8 +77,8 @@ function filterToGrayscale(){
 }
 
 // convolutes 3x3 pixel window through Sobel kernel and returns processed value
-function convoluteSobel(w){
-    var threshold = 180;
+function isEdge(w){
+    var threshold = 100;
     var kernelX = [
                 [-1, 0, 1], 
                 [-2, 0, 2],
@@ -88,44 +88,53 @@ function convoluteSobel(w){
                 [0, 0, 0],
                 [1, 2, 1]];
 
+    var sumX = 0, sumY = 0;
+
     for(var i = 0; i < w.length; i++){
         for(var j = 0; j < w[i].length; j++){
-            
-            var magX = w[i][j][0] * kernelX[i][j];
-            var magY = w[i][j][0] * kernelY[i][j];
-            var magnitude = Math.sqrt(Math.pow(magX, 2) + Math.pow(magY, 2));
-            if (magnitude < threshold){
-                // console.log(w)
-                w[i][j].push(1);
-                // console.log(w)
-            }
-            else{
-                w[i][j].push(0);
-            //     w[i][j][0] = 0;
-            //     w[i][j][1] = 0;
-            //     w[i][j][2] = 0;
-            //     w[i][j][3] = 255;
-            }
+            sumX += w[i][j][0] * kernelX[i][j];
+            sumY += w[i][j][0] * kernelY[i][j];
         }
     }
 
+    var magnitude = Math.sqrt(Math.pow(sumX, 2) + Math.pow(sumY, 2));
+    
+    // mark as 1 if it exceeds threshold
+    return magnitude > threshold;
 }
 
 function edgeDetectSobel(){
+
+    var edgeColor = [0, 0, 0, 255]
     // for each pixel window, put it through Sobel kernel
     var data = getImageData(context);
+    var edges = [];
 
-    for(var i = 1; i+8 < data.length; i+=1){
+    for(var i = 0; i+8 < data.length; i+=1){
         var pxWindow = [
             [data[i], data[i+1], data[i+2]],
             [data[i+3], data[i+4], data[i+5]],
             [data[i+6], data[i+7], data[i+8]],
             ]
-        convoluteSobel(pxWindow);
+        var edge = isEdge(pxWindow);
+        if(edge){
+            Array.prototype.push.apply(edges, edgeColor);
+        }
+        else{
+            var transparentPix = data[i].slice();
+            transparentPix[3] = 125;
+            Array.prototype.push.apply(edges, transparentPix);
+        }
+    }
+
+    // pad missing edges
+    var missing = data.length*data[0].length - edges.length
+    for(var i = 0; i < missing/4; i++){
+        Array.prototype.unshift.apply(edges, [0, 0, 0, 255]);
     }
 
     // overwrite image
-    context.putImageData(arrToImageData(data), 0, 0);
+    context.putImageData(new ImageData(new Uint8ClampedArray(edges), canvas.width, canvas.height), 0, 0);
 
 }
 
