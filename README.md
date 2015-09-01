@@ -4,8 +4,8 @@ Various implementations of image processing algorithms for study. All done in va
 
 Contains:
 
-* Sobel edge detector
+* Sobel edge detector [demo](https://piratefsh.github.io/image-processing/sobel/index.html) (p.s., it's slow, so wait for a bit)
 * And more stuff coming soon, maybe?
 
-## To look at stuff
-Open index.html files in each folder
+## To look at stuffg
+Open index.html files in each folder, or view the demo links.
