@@ -9,12 +9,11 @@ function Canvas(options){
     this.canvas.height = options.height;
 
     this.dimensions = this.canvas.getBoundingClientRect();
-
-    trace(this.dimensions)
 }
 
 Canvas.prototype = {
-    drawImage: function(url){
+
+    drawImage: function(url, onready){
         var _dimensions = this.dimensions;
         var _context = this.context;
 
@@ -31,11 +30,17 @@ Canvas.prototype = {
             imgOffsetWidth = -(imgWidth - _dimensions.width)/2
             
             _context.drawImage(img, imgOffsetWidth, imgOffsetHeight, imgWidth, imgHeight);
-        };
-    },
-    filter: function(options){
+
+            // do callback on image load
+            onready();
+        }
 
     },
+
+    applyFilter: function(filter){
+        filter(this);
+    },
+
     edgeDetect: function(options){
 
     }
