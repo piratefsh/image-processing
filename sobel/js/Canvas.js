@@ -46,7 +46,45 @@ Canvas.prototype = {
     },
 
     doEdgeDetect: function(ed){
-        ed.doDetect(this);
+        var edges = []; // keep track of pixels that are edges
+        var edgeColor = [255, 255, 0, 255]; // color to mark edge
+        var data = this.getDataArr();
+
+        // callbacks to draw yellow lines on edges
+        var onConvoluted = function(index, isEdge){
+            //on convoluted callback, for each window that starts 
+            // with pixel at index (top left corner)
+            
+            // if window is an edge, mark as such with color, 
+            // else just print original pixel color
+            if(isEdge){
+                Array.prototype.push.apply(edges, edgeColor);
+            }
+            else{
+                var transparentPix = data[index].slice();
+
+                // make pix slightly transparent
+                transparentPix[3] = 200;
+                Array.prototype.push.apply(edges, transparentPix);
+            }
+        }
+
+        var onConvolutionDone = function(){
+            // pad missing edges. edge detected image will be smaller than 
+            // original because cannot determine edges at image edges
+            var missing = data.length*data[0].length - edges.length
+            for(var i = 0; i < missing/4; i++){
+                Array.prototype.unshift.apply(edges, edgeColor);
+            }
+
+            // overwrite image with the edges
+            this.context.putImageData(
+                new ImageData(
+                new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
+                0, 0);
+        }.bind(this);
+
+        ed.doDetect(this, onConvoluted, onConvolutionDone);
     },
 
     getDataArr: function(){
@@ -62,6 +100,4 @@ Canvas.prototype = {
         }
         return arr;
     },
-
-
 }

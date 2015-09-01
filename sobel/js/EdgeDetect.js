@@ -5,10 +5,10 @@ function EdgeDetect(opt){
 }
 
 EdgeDetect.prototype = {
-    doDetect: function(c){
+    doDetect: function(){
         switch(this.options.kernel){
             case 'sobel': 
-                this.sobel(c);
+                this.sobel.apply(this, arguments);
                 return;
             default:
                 error('No such edge detector exists!')
@@ -43,15 +43,10 @@ EdgeDetect.prototype = {
         // mark as 1 if it exceeds threshold
         return magnitude > threshold;
     },
-    sobel: function(c){
+
+    sobel: function(c, onConvoluted, onDoneConvoluting){
         var context = c.context;
         var canvas = c.canvas;
-
-        // color to mark edge
-        var edgeColor = [255, 255, 0, 255]
-
-        // keep track which pixels are edges
-        var edges = [];
 
         var data = c.getDataArr();
 
@@ -71,30 +66,9 @@ EdgeDetect.prototype = {
                 [data[r3], data[r3+1], data[r3+2]],
                 ]
 
-            // if window is an edge, mark as such with color, 
-            // else just print original pixel color
-            if(this.isSobelEdge(pxWindow)){
-                Array.prototype.push.apply(edges, edgeColor);
-            }
-            else{
-                var transparentPix = data[i].slice();
-
-                // make pix slightly transparent
-                transparentPix[3] = 200;
-                Array.prototype.push.apply(edges, transparentPix);
-            }
+            onConvoluted(i, this.isSobelEdge(pxWindow));
         }
-
-        // pad missing edges. edge detected image will be smaller than 
-        // original because cannot determine edges at image edges
-        var missing = data.length*data[0].length - edges.length
-        for(var i = 0; i < missing/4; i++){
-            Array.prototype.unshift.apply(edges, edgeColor);
-        }
-
-        // overwrite image with the edges
-        context.putImageData(new ImageData(new Uint8ClampedArray(edges), canvas.width, canvas.height), 0, 0);
-
+        onDoneConvoluting();
     }
 }
 
