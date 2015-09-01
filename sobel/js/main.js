@@ -14,7 +14,7 @@ function init(){
     
     img.src = 'img/noguchi01.jpg';
     // img.src = 'img/coins.jpg';
-    // img.src = 'img/phillylove.jpg';
+    img.src = 'img/phillylove.jpg';
     // img.src = 'img/concentriccircles.svg';
     img.onload = function(){
         imgWidth = canvasDimensions.width;
@@ -60,7 +60,7 @@ function filterToGrayscale(){
 // convolutes 3x3 pixel window through Sobel kernel 
 // and returns if exceeds threshold
 function isEdge(w){
-    var threshold = 80;
+    var threshold = 200;
     var kernelY = [
                 [-1, 0, 1], 
                 [-2, 0, 2],
