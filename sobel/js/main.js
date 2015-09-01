@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: '720',
-        height: '500',
-        imageUrl: 'img/noguchi01.jpg'
+        width: '600',
+        height: '400',
+        imageUrl: 'img/phillylove.jpg'
     }
 }
 
@@ -21,8 +21,11 @@ function init(){
         // simplify image by making it greyscale
         var greyscale = new Filter({type: 'greyscale'});
         canvas.applyFilter(greyscale);
+        
+        var gaussian = new Filter({type: 'gaussian'});
+        canvas.applyFilter(gaussian);
 
-        // apply sobel 
+        // // apply sobel 
         var sobel = new EdgeDetect({kernel: 'sobel', threshold: 100});
         canvas.doEdgeDetect(sobel);
     });

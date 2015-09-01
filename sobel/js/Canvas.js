@@ -41,6 +41,45 @@ Canvas.prototype = {
 
     },
 
+    convolve: function(kernel){
+        var context = this.context;
+        var canvas = this.canvas;
+        var data = this.getDataArr();
+
+        var maxPixelOffset = canvas.width * kernel.length * 2 - 2;
+
+        var newPixels = [];
+
+        for(var i = 0; i < data.length - maxPixelOffset; i++){
+            var sum = 0;
+            for(var a = 0; a < kernel.length; a++){
+                for(var b = 0; b < kernel[a].length; b++){
+                    // math to get px position in window
+                    var offset = canvas.width*a;
+                    var px = data[i + offset + b];
+
+                    // new value for pixel
+                    var newVal = kernel[a][b] * px[0];
+                    sum += newVal;
+                }
+            }
+
+            Array.prototype.push.apply(newPixels, [sum, sum, sum, 255]);
+        }
+
+        for(var i = 0; i < maxPixelOffset; i++){
+            Array.prototype.push.apply(newPixels, [0,0,0,0]);
+        }
+
+        trace(newPixels.length)
+
+        // overwrite image with the edges
+        context.putImageData(
+            new ImageData(
+            new Uint8ClampedArray(newPixels), canvas.width),
+            0, 0);
+    },
+
     applyFilter: function(f){
         f.doFilter(this);
     },
@@ -52,7 +91,7 @@ Canvas.prototype = {
 
         // callbacks to draw yellow lines on edges
         var onConvoluted = function(index, isEdge){
-            //on convoluted callback, for each window that starts 
+            // on convoluted callback, for each window that starts 
             // with pixel at index (top left corner)
             
             // if window is an edge, mark as such with color, 
