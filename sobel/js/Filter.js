@@ -1,13 +1,16 @@
-function Filter(options){
-}
+"use strict"
 
+function Filter(opt){
+    this.options = opt;
+}
 
 Filter.prototype = {
 
-    get: function(type){
-        switch(type){
+    doFilter: function(c){
+        switch(this.options.type){
             case 'greyscale': 
-                return this.greyscale
+                this.greyscale(c);
+                return;
             default:
                 error('No such filter exists!')
                 return;

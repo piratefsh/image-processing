@@ -1,3 +1,5 @@
+"use strict"
+
 // globals
 var canvas;
 
@@ -15,15 +17,14 @@ function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
     canvas.drawImage(options.canvas.imageUrl, function(){
-        // filter and edge detector factories
-        var filters = new Filter();
-        var edgeDetectors = new EdgeDetect();
 
         // simplify image by making it greyscale
-        canvas.applyFilter(filters.get('greyscale'));
+        var greyscale = new Filter({type: 'greyscale'});
+        canvas.applyFilter(greyscale);
 
         // apply sobel 
-        canvas.doEdgeDetect(edgeDetectors.get('sobel'));
+        var sobel = new EdgeDetect({kernel: 'sobel', threshold: 100});
+        canvas.doEdgeDetect(sobel);
     });
 }
 

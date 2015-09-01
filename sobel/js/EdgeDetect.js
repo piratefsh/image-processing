@@ -1,39 +1,25 @@
-function EdgeDetect(){
+"use strict"
 
+function EdgeDetect(opt){
+    this.options = opt;
 }
 
 EdgeDetect.prototype = {
-    get: function(type){
-        switch(type){
+    doDetect: function(c){
+        switch(this.options.kernel){
             case 'sobel': 
-                return this.sobel;
+                this.sobel(c);
+                return;
             default:
                 error('No such edge detector exists!')
                 return;
         }
     },
 
-    // return image data as 2D array, one 4 element array per pixel
-    // [[r,g,b,a],...[r,g,b,a]] for easier looping
-    _getDataArr: function(c){
-        var context = c.context;
-        var canvas = c.canvas;
-
-        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        var data = imageData.data;
-
-        var arr = [];
-        for(var i = 0; i < data.length; i += 4){
-            var pixel = [data[i], data[i+1], data[i+2], data[i+3]];
-            arr.push(pixel);
-        }
-        return arr;
-    },
-
-    // convolutes 3x3 pixel window through Sobel kernel 
-    // and returns if exceeds threshold
     isSobelEdge: function(w){
-        var threshold = 200;
+        // convolutes 3x3 pixel window through Sobel kernel 
+        // and returns if exceeds threshold
+        var threshold = this.options.threshold;
         var kernelY = [
                     [-1, 0, 1], 
                     [-2, 0, 2],
@@ -57,7 +43,6 @@ EdgeDetect.prototype = {
         // mark as 1 if it exceeds threshold
         return magnitude > threshold;
     },
-
     sobel: function(c){
         var context = c.context;
         var canvas = c.canvas;
@@ -68,7 +53,7 @@ EdgeDetect.prototype = {
         // keep track which pixels are edges
         var edges = [];
 
-        var data = EdgeDetect.prototype._getDataArr(c);
+        var data = c.getDataArr();
 
         // math to get 3x3 window of pixels because image data given is just a 1D array of pixels
         var maxPixelOffset = canvas.width*2+2;
@@ -88,7 +73,7 @@ EdgeDetect.prototype = {
 
             // if window is an edge, mark as such with color, 
             // else just print original pixel color
-            if(EdgeDetect.prototype.isSobelEdge(pxWindow)){
+            if(this.isSobelEdge(pxWindow)){
                 Array.prototype.push.apply(edges, edgeColor);
             }
             else{
@@ -100,13 +85,14 @@ EdgeDetect.prototype = {
             }
         }
 
-        // pad missing edges
+        // pad missing edges. edge detected image will be smaller than 
+        // original because cannot determine edges at image edges
         var missing = data.length*data[0].length - edges.length
         for(var i = 0; i < missing/4; i++){
             Array.prototype.unshift.apply(edges, edgeColor);
         }
 
-        // overwrite image
+        // overwrite image with the edges
         context.putImageData(new ImageData(new Uint8ClampedArray(edges), canvas.width, canvas.height), 0, 0);
 
     }
