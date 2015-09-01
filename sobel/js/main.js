@@ -15,11 +15,16 @@ function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
     canvas.drawImage(options.canvas.imageUrl, function(){
+        // filter and edge detector factories
         var filters = new Filter();
-        canvas.applyFilter(filters.get('greyscale'));
-    });
+        var edgeDetectors = new EdgeDetect();
 
-    // canvas.edgeDetect(new EdgeDetect({kernel: 'Sobel'}));
+        // simplify image by making it greyscale
+        canvas.applyFilter(filters.get('greyscale'));
+
+        // apply sobel 
+        canvas.doEdgeDetect(edgeDetectors.get('sobel'));
+    });
 }
 
 

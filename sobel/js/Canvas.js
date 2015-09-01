@@ -41,8 +41,8 @@ Canvas.prototype = {
         filter(this);
     },
 
-    edgeDetect: function(options){
-
+    doEdgeDetect: function(detect){
+        detect(this);
     }
 
 }
