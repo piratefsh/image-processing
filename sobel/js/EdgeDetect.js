@@ -4,12 +4,8 @@ function EdgeDetect(opt){
     this.options = opt;
     this.kernels = {
         'sobel':{
-            x:  [[-1, 0, 1], 
-                [-2, 0, 2],
-                [-1, 0, 1]],
-            y:  [[-1, -2, -1],
-                [0, 0, 0],
-                [1, 2, 1]]
+            x:  [-1, 0, 1, -2, 0, 2,-1, 0, 1],
+            y:  [-1, -2, -1, 0, 0, 0, 1, 2, 1]
         }
     }
 }
@@ -37,7 +33,7 @@ EdgeDetect.prototype = {
         var kernelX = this.kernels['sobel'].x;
         var kernelY = this.kernels['sobel'].y;
 
-        var kernelSize = kernelX.length;
+        var kernelSize = 3;
 
         // offset value to get window of pixels
         var rowOffset = canvas.width;
@@ -47,7 +43,7 @@ EdgeDetect.prototype = {
 
         var magnitudes = [];
 
-        // var s = new Date();
+        var s = new Date();
 
         // optimizations
         var SQRT = Math.sqrt;
@@ -61,8 +57,8 @@ EdgeDetect.prototype = {
                     var r = px[0];
 
                     // use px[0] (i.e. R value) because grayscale anyway)
-                    sumX += r * kernelX[y][x];
-                    sumY += r * kernelY[y][x];
+                    sumX += r * kernelX[y*kernelSize + x];
+                    sumY += r * kernelY[y*kernelSize + x];
                 }
             }
 
@@ -70,8 +66,8 @@ EdgeDetect.prototype = {
             magnitudes.push(magnitude);
         }
 
-        // var e = new Date();
-        // trace("time taken for block", e - s)
+        var e = new Date();
+        trace("time taken for block", e - s)
         onDoneConvoluting(magnitudes, this.options.threshold);
     }
 }
