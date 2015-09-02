@@ -50,11 +50,11 @@ EdgeDetect.prototype = {
             var sumX = 0, sumY = 0;
             for(var x = 0; x < kernelSize; x++){
                 for(var y = 0; y < kernelSize; y++){
-                    var px = data[i + (rowOffset * x) + y];
+                    var px = data[i + (rowOffset * y) + x];
 
                     // use px[0] (i.e. R value) because grayscale anyway)
-                    sumX += px[0] * kernelX[x][y];
-                    sumY += px[0] * kernelY[x][y];
+                    sumX += px[0] * kernelX[y][x];
+                    sumY += px[0] * kernelY[y][x];
                 }
             }
             var magnitude = Math.sqrt(Math.ceil(Math.pow(sumX, 2) + Math.pow(sumY, 2)));
