@@ -16,10 +16,8 @@ var options = {
 function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
+    pipeImage(canvas);
     // pipeVideo(canvas);
-    canvas.drawImage(options.canvas.imageUrl, function(){
-        doSobel(canvas);
-    });
 }
 
 function doSobel(canvas){
@@ -34,6 +32,12 @@ function doSobel(canvas){
     var sobel = new EdgeDetect({kernel: 'sobel', threshold: 100});
     canvas.doEdgeDetect(sobel);
 
+}
+
+function pipeImage(){
+    canvas.drawImage(options.canvas.imageUrl, function(){
+        doSobel(canvas);
+    });
 }
 
 function pipeVideo(c){
