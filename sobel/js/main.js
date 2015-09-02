@@ -16,10 +16,10 @@ var options = {
 function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
-    pipeVideo(canvas);
-    // canvas.drawImage(options.canvas.imageUrl, function(){
-    //     doSobel(canvas);
-    // });
+    // pipeVideo(canvas);
+    canvas.drawImage(options.canvas.imageUrl, function(){
+        doSobel(canvas);
+    });
 }
 
 function doSobel(canvas){

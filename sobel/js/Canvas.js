@@ -119,21 +119,16 @@ Canvas.prototype = {
             // original because cannot determine edges at image edges
             var missingPixels = (data.length*data[0].length - edges.length)/4;
             var padding = [];
+            var filter = [0,0,0,255];
 
             for(var i = 0; i < missingPixels; i++){
-                padding.push(edgeColor);
+                for(var f of filter){
+                    padding.push(f);
+                }
             }
 
-            padding = padding.reduce(function(prev, curr){
-                for(var thing of curr){
-                    prev.push(thing);
-                }
-                return prev;
-            }, []);
-
             Array.prototype.unshift.apply(edges, padding);
-
-            // overwrite image with the edges
+            
             this.context.putImageData(
                 new ImageData(
                 new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),

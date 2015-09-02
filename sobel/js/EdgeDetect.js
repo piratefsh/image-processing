@@ -2,6 +2,16 @@
 
 function EdgeDetect(opt){
     this.options = opt;
+    this.kernels = {
+        'sobel':{
+            x:  [[-1, 0, 1], 
+                [-2, 0, 2],
+                [-1, 0, 1]],
+            y:  [[-1, -2, -1],
+                [0, 0, 0],
+                [1, 2, 1]]
+        }
+    }
 }
 
 EdgeDetect.prototype = {
@@ -20,14 +30,8 @@ EdgeDetect.prototype = {
         // convolutes 3x3 pixel window through Sobel kernel 
         // and returns if exceeds threshold
         
-        var kernelY = [
-                    [-1, 0, 1], 
-                    [-2, 0, 2],
-                    [-1, 0, 1]];
-        var kernelX = [
-                    [-1, -2, -1],
-                    [0, 0, 0],
-                    [1, 2, 1]];
+        var kernelY = this.kernels['sobel'].x;
+        var kernelX = this.kernels['sobel'].y;
 
         var sumX = 0, sumY = 0;
 
@@ -66,7 +70,8 @@ EdgeDetect.prototype = {
                 ]
 
             var magnitude = this.sobelMagnitude(pxWindow);
-            onConvoluted(i, magnitude > this.options.threshold, magnitude);
+            var exceedsThreshold = magnitude > this.options.threshold;
+            onConvoluted(i, exceedsThreshold, magnitude);
         }
         onDoneConvoluting();
     }
