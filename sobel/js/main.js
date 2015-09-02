@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: '600',
-        height: '440',
+        width: '400',
+        height: '300',
         imageUrl: 'img/phillylove.jpg'
     }
 }
@@ -16,11 +16,11 @@ var options = {
 function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
-    pipeImage(canvas);
-    // pipeVideo(canvas);
+    // pipeImage(canvas);
+    pipeVideo(canvas);
 }
 
-function doSobel(canvas){
+function filterIt(canvas){
     // simplify image by making it greyscale
     var greyscale = new Filter({type: 'greyscale'});
     canvas.applyFilter(greyscale);
@@ -53,7 +53,7 @@ function pipeVideo(c){
            setInterval(function() {
               if (video.paused || video.ended) return;
               c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
-              doSobel(c);
+              filterIt(c);
            }, 10);
         }, false);
     }, function(e){error(e)})

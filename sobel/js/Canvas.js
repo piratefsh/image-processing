@@ -119,7 +119,7 @@ Canvas.prototype = {
             // original because cannot determine edges at image edges
             var missingPixels = (data.length*data[0].length - edges.length)/4;
             var padding = [];
-            var filter = [0,0,0,255];
+            var filter = [255,255,255,255];
 
             for(var i = 0; i < missingPixels; i++){
                 for(var f of filter){
