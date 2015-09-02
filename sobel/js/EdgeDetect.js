@@ -45,7 +45,6 @@ EdgeDetect.prototype = {
         // math to get 3x3 window of pixels because image data given is just a 1D array of pixels
         var maxPixelOffset = canvas.width * 2 + kernelSize - 1;
 
-
         for(var i = 0; i + maxPixelOffset < data.length; i++){
             // sum of each pixel * kernel value
             var sumX = 0, sumY = 0;

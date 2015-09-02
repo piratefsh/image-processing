@@ -98,20 +98,13 @@ Canvas.prototype = {
             // with pixel at index (top left corner)
             
             // if window is an edge, mark as such with color, 
-            // else just print original pixel color
             if(isEdge){
-                var color = edgeColor.slice();
                 //scale transparency, max magnitude is 255*4
-                color[3] = magnitude/4; 
-                // trace(magnitude)
-                Array.prototype.push.apply(edges, color);
+                edgeColor[3] = magnitude/4; 
+                Array.prototype.push.apply(edges, edgeColor);
             }
             else{
-                var transparentPix = data[index].slice();
-
-                // make pix slightly transparent
-                transparentPix[3] = 0;
-                Array.prototype.push.apply(edges, transparentPix);
+                Array.prototype.push.apply(edges, [0,0,0,0]);
             }
         }
 
@@ -119,16 +112,13 @@ Canvas.prototype = {
             // pad missing edges. edge detected image will be smaller than 
             // original because cannot determine edges at image edges
             var missingPixels = (data.length*data[0].length - edges.length)/4;
-            var padding = [];
             var filter = [255,255,255,255];
 
             for(var i = 0; i < missingPixels; i++){
                 for(var f of filter){
-                    padding.push(f);
+                    edges.push(f);
                 }
             }
-
-            Array.prototype.unshift.apply(edges, padding);
             
             this.context.putImageData(
                 new ImageData(

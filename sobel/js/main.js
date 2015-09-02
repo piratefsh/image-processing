@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: '400',
-        height: '300',
+        width: '500',
+        height: '360',
         imageUrl: 'img/phillylove.jpg'
     }
 }
@@ -29,7 +29,7 @@ function filterIt(canvas){
     // canvas.applyFilter(gaussian);
 
     // apply sobel 
-    var sobel = new EdgeDetect({kernel: 'sobel', threshold: 100});
+    var sobel = new EdgeDetect({kernel: 'sobel', threshold: 40});
     
     var timer = {
         start: new Date(), 
