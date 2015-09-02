@@ -15,10 +15,10 @@ function EdgeDetect(opt){
 }
 
 EdgeDetect.prototype = {
-    doDetect: function(){
+    doDetect: function(a, b, c){
         switch(this.options.kernel){
             case 'sobel': 
-                this.sobel.apply(this, arguments);
+                this.sobel(a, b, c);
                 return;
             default:
                 error('No such edge detector exists!')
@@ -26,7 +26,7 @@ EdgeDetect.prototype = {
         }
     },
 
-    sobel: function(c, onConvoluted, onDoneConvoluting){
+    sobel: function(c, onDoneConvoluting){
         var context = c.context;
         var canvas = c.canvas;
 
@@ -45,24 +45,34 @@ EdgeDetect.prototype = {
         // math to get 3x3 window of pixels because image data given is just a 1D array of pixels
         var maxPixelOffset = canvas.width * 2 + kernelSize - 1;
 
+        var magnitudes = [];
+
+        // var s = new Date();
+
+        // optimizations
+        var SQRT = Math.sqrt;
+
         for(var i = 0; i + maxPixelOffset < data.length; i++){
             // sum of each pixel * kernel value
             var sumX = 0, sumY = 0;
             for(var x = 0; x < kernelSize; x++){
                 for(var y = 0; y < kernelSize; y++){
                     var px = data[i + (rowOffset * y) + x];
+                    var r = px[0];
 
                     // use px[0] (i.e. R value) because grayscale anyway)
-                    sumX += px[0] * kernelX[y][x];
-                    sumY += px[0] * kernelY[y][x];
+                    sumX += r * kernelX[y][x];
+                    sumY += r * kernelY[y][x];
                 }
             }
-            var magnitude = Math.sqrt(Math.ceil(Math.pow(sumX, 2) + Math.pow(sumY, 2)));
-            var exceedsThreshold = magnitude > this.options.threshold;
-            
-            onConvoluted(i, exceedsThreshold, magnitude);
+
+            var magnitude = SQRT(sumX*sumX + sumY*sumY);
+            magnitudes.push(magnitude);
         }
-        onDoneConvoluting();
+
+        // var e = new Date();
+        // trace("time taken for block", e - s)
+        onDoneConvoluting(magnitudes, this.options.threshold);
     }
 }
 

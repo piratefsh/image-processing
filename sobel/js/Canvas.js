@@ -89,24 +89,23 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    onDetectOne: function(edges, edgeColor, index, isEdge, magnitude){
-        // on convoluted callback, for each window that starts 
-        // with pixel at index (top left corner)
-        
-        // if window is an edge, mark as such with color, 
-        if(isEdge){
-            //scale transparency, max magnitude is 255*4
-            edgeColor[3] = magnitude/4; 
-            Array.prototype.push.apply(edges, edgeColor);
-        }
-        else{
-            Array.prototype.push.apply(edges, [0,0,0,0]);
-        }
-    },
-
-    onDetectFinished: function(onFinished, edges){
+    onDetectFinished: function(onFinished, magnitudes, threshold){
         // pad missing edges. edge detected image will be smaller than 
         // original because cannot determine edges at image edges
+        var edges = [];
+        var edgeColor = [0, 0, 0, 255];
+        for(var i = 0; i < magnitudes.length; i++){
+            var m = magnitudes[i];
+            if(m > threshold){
+                //scale transparency, max magnitude is 255*4
+                edgeColor[3] = m/4; 
+                Array.prototype.push.apply(edges, edgeColor);
+            }
+            else{
+                Array.prototype.push.apply(edges, [0,0,0,0]);
+            }
+        }
+
         var data = this.getDataArr();
 
         var missingPixels = (data.length*data[0].length - edges.length)/4;
@@ -127,12 +126,9 @@ Canvas.prototype = {
     },
 
     doEdgeDetect: function(ed, onFinished){
-        this.tmp.edges = []; // keep track of pixels that are edges
-        this.tmp.edgeColor = [0, 0, 0, 255]; // color to mark edge
 
         // do detection with set callbacks
-        ed.doDetect(this, this.onDetectOne.bind(this, this.tmp.edges, this.tmp.edgeColor), 
-            this.onDetectFinished.bind(this, onFinished, this.tmp.edges));
+        ed.doDetect(this, this.onDetectFinished.bind(this, onFinished));
     },
 
     getDataArr: function(){

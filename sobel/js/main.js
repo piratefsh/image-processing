@@ -59,7 +59,6 @@ function pipeVideo(c){
         var video = document.getElementById('user-video');
         video.src = window.URL.createObjectURL(stream);
         video.addEventListener('play', function() {
-           // Every 33 milliseconds copy the video image to the canvas
             setInterval(function() {
                 if (video.paused || video.ended){
                     return;
@@ -68,7 +67,7 @@ function pipeVideo(c){
                 c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
                 filterIt(c);
 
-            }, 40);
+            }, 33);
         }, false);
     }, function(e){error(e)})
 }
