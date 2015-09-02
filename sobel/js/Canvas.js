@@ -89,11 +89,11 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    onDetectOne: function(index, isEdge, magnitude){
+    onDetectOne: function(edges, edgeColor, index, isEdge, magnitude){
         // on convoluted callback, for each window that starts 
         // with pixel at index (top left corner)
-        var edges = this.tmp.edges;
-        var edgeColor = this.tmp.edgeColor;
+        // var edges = this.tmp.edges;
+        // var edgeColor = this.tmp.edgeColor;
         
         // if window is an edge, mark as such with color, 
         if(isEdge){
@@ -106,11 +106,10 @@ Canvas.prototype = {
         }
     },
 
-    onDetectFinished: function(onFinished){
+    onDetectFinished: function(onFinished, edges){
         // pad missing edges. edge detected image will be smaller than 
         // original because cannot determine edges at image edges
         var data = this.getDataArr();
-        var edges = this.tmp.edges;
 
         var missingPixels = (data.length*data[0].length - edges.length)/4;
         var filter = [255,255,255,255];
@@ -133,7 +132,9 @@ Canvas.prototype = {
         this.tmp.edges = []; // keep track of pixels that are edges
         this.tmp.edgeColor = [0, 0, 0, 255]; // color to mark edge
 
-        ed.doDetect(this, this.onDetectOne.bind(this), this.onDetectFinished.bind(this, onFinished));
+        // do detection with set callbacks
+        ed.doDetect(this, this.onDetectOne.bind(this, this.tmp.edges, this.tmp.edgeColor), 
+            this.onDetectFinished.bind(this, onFinished, this.tmp.edges));
     },
 
     getDataArr: function(){
