@@ -140,8 +140,7 @@ Canvas.prototype = {
 
         var arr = [];
         for(var i = 0; i < data.length; i += 4){
-            var pixel = [data[i], data[i+1], data[i+2], data[i+3]];
-            arr.push(pixel);
+            arr.push([data[i], data[i+1], data[i+2], data[i+3]]);
         }
         return arr;
     },
