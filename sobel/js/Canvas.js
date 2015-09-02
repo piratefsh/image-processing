@@ -42,6 +42,9 @@ Canvas.prototype = {
     },
 
     convolve: function(kernel){
+        // does convolution given a kernel. missing edge pixels because
+        // of how kernel works centered on a something
+
         var context = this.context;
         var canvas = this.canvas;
         var data = this.getDataArr();
@@ -67,11 +70,10 @@ Canvas.prototype = {
             Array.prototype.push.apply(newPixels, [sum, sum, sum, 255]);
         }
 
+        trace(newPixels.length)
         for(var i = 0; i < maxPixelOffset; i++){
             Array.prototype.push.apply(newPixels, [0,0,0,0]);
         }
-
-        trace(newPixels.length)
 
         // overwrite image with the edges
         context.putImageData(

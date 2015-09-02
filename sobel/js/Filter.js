@@ -59,7 +59,6 @@ Filter.prototype = {
             }
             kernel.push(krow);
         }
-        trace(kernel)
         return kernel;
     },
 
