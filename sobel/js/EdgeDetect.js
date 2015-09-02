@@ -26,27 +26,6 @@ EdgeDetect.prototype = {
         }
     },
 
-    sobelMagnitude: function(w){
-        // convolutes 3x3 pixel window through Sobel kernel 
-        // and returns if exceeds threshold
-        
-        var kernelY = this.kernels['sobel'].x;
-        var kernelX = this.kernels['sobel'].y;
-
-        var sumX = 0, sumY = 0;
-
-        for(var i = 0; i < w.length; i++){
-            for(var j = 0; j < w[i].length; j++){
-                sumX += w[i][j][0] * kernelX[i][j];
-                sumY += w[i][j][0] * kernelY[i][j];
-            }
-        }
-
-        var magnitude = Math.sqrt(Math.ceil(Math.pow(sumX, 2) + Math.pow(sumY, 2)));
-        
-        return magnitude;
-    },
-
     sobel: function(c, onConvoluted, onDoneConvoluting){
         var context = c.context;
         var canvas = c.canvas;
