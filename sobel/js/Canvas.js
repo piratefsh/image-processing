@@ -92,37 +92,38 @@ Canvas.prototype = {
     onDetectFinished: function(onFinished, magnitudes, threshold){
         // pad missing edges. edge detected image will be smaller than 
         // original because cannot determine edges at image edges
+
+
         var edges = [];
-        var edgeColor = [0, 0, 0, 255];
+        // timer('start');
         for(var i = 0; i < magnitudes.length; i++){
             var m = magnitudes[i];
             if(m > threshold){
-                //scale transparency, max magnitude is 255*4
-                edgeColor[3] = m/4; 
-                Array.prototype.push.apply(edges, edgeColor);
+                //outline with scale transparency, max magnitude is 255*4
+                edges.push(0,0,0,m/4)
             }
             else{
-                Array.prototype.push.apply(edges, [0,0,0,0]);
+                edges.push(0,0,0,0)
             }
         }
 
-        var data = this.getDataArr();
 
-        var missingPixels = (data.length*data[0].length - edges.length)/4;
-        var filter = [255,255,255,255];
+        // pad missing
+        var dataLength = this.canvas.width * this.canvas.height * 4;
+        var missingPixels = (dataLength - edges.length)/4;
 
-        for(var i = 0; i < missingPixels; i++){
-            for(var j = 0; j < filter.length; j++){
-                edges.push(filter[j]);
-            }
+        for(var i = 0; i < missingPixels*4; i++){
+            edges.push(255);
         }
         
         this.context.putImageData(
-            new ImageData(
-            new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
+            new ImageData(new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
             0, 0);
 
+
         onFinished();
+        // timer('end');
+
     },
 
     doEdgeDetect: function(ed, onFinished){

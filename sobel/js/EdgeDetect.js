@@ -47,7 +47,7 @@ EdgeDetect.prototype = {
 
         var magnitudes = [];
 
-        var s = new Date();
+        // var s = new Date();
 
         // optimizations
         var SQRT = Math.sqrt;
@@ -70,8 +70,8 @@ EdgeDetect.prototype = {
             magnitudes.push(magnitude);
         }
 
-        var e = new Date();
-        trace("time taken for block", e - s)
+        // var e = new Date();
+        // trace("time taken for block", e - s)
         onDoneConvoluting(magnitudes, this.options.threshold);
     }
 }
