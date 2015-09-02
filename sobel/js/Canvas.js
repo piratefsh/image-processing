@@ -11,6 +11,7 @@ function Canvas(options){
     this.canvas.height = options.height;
 
     this.dimensions = this.canvas.getBoundingClientRect();
+
 }
 
 Canvas.prototype = {
@@ -86,7 +87,7 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    doEdgeDetect: function(ed){
+    doEdgeDetect: function(ed, onFinished){
         var edges = []; // keep track of pixels that are edges
         var edgeColor = [0, 0, 0, 255]; // color to mark edge
         var data = this.getDataArr();
@@ -133,6 +134,9 @@ Canvas.prototype = {
                 new ImageData(
                 new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
                 0, 0);
+
+            onFinished();
+
         }.bind(this);
 
         ed.doDetect(this, onConvoluted, onConvolutionDone);

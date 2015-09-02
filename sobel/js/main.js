@@ -30,17 +30,28 @@ function filterIt(canvas){
 
     // apply sobel 
     var sobel = new EdgeDetect({kernel: 'sobel', threshold: 100});
-    canvas.doEdgeDetect(sobel);
+    
+    var timer = {
+        start: new Date(), 
+        end: null
+    }
+    canvas.doEdgeDetect(sobel, function(){
+        // on edge detection done
+        timer.end = new Date();
+        document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
+    });
 
 }
 
-function pipeImage(){
-    canvas.drawImage(options.canvas.imageUrl, function(){
-        doSobel(canvas);
+function pipeImage(c){
+    // pipe an image to canvas
+    c.drawImage(options.canvas.imageUrl, function(){
+        filterIt(c);
     });
 }
 
 function pipeVideo(c){
+    // pipe an a video stream to canvas
     navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
     navigator.webkitGetUserMedia || navigator.msGetUserMedia;
     navigator.getUserMedia({
@@ -50,11 +61,15 @@ function pipeVideo(c){
         video.src = window.URL.createObjectURL(stream);
         video.addEventListener('play', function() {
            // Every 33 milliseconds copy the video image to the canvas
-           setInterval(function() {
-              if (video.paused || video.ended) return;
-              c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
-              filterIt(c);
-           }, 10);
+            setInterval(function() {
+                if (video.paused || video.ended){
+                    return;
+                } 
+
+                c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
+                filterIt(c);
+
+            }, 33);
         }, false);
     }, function(e){error(e)})
 }
