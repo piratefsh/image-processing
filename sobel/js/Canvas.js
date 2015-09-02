@@ -15,7 +15,9 @@ function Canvas(options){
 }
 
 Canvas.prototype = {
-
+    tmp:{
+        // store buffered stuff
+    },
     drawImage: function(url, onready){
         //fills scaled image to canvas and centers it
 
@@ -87,49 +89,51 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    doEdgeDetect: function(ed, onFinished){
-        var edges = []; // keep track of pixels that are edges
-        var edgeColor = [0, 0, 0, 255]; // color to mark edge
-        var data = this.getDataArr();
+    onDetectOne: function(index, isEdge, magnitude){
+        // on convoluted callback, for each window that starts 
+        // with pixel at index (top left corner)
+        var edges = this.tmp.edges;
+        var edgeColor = this.tmp.edgeColor;
+        
+        // if window is an edge, mark as such with color, 
+        if(isEdge){
+            //scale transparency, max magnitude is 255*4
+            edgeColor[3] = magnitude/4; 
+            Array.prototype.push.apply(edges, edgeColor);
+        }
+        else{
+            Array.prototype.push.apply(edges, [0,0,0,0]);
+        }
+    },
 
-        // callbacks to draw yellow lines on edges
-        var onConvoluted = function(index, isEdge, magnitude){
-            // on convoluted callback, for each window that starts 
-            // with pixel at index (top left corner)
-            
-            // if window is an edge, mark as such with color, 
-            if(isEdge){
-                //scale transparency, max magnitude is 255*4
-                edgeColor[3] = magnitude/4; 
-                Array.prototype.push.apply(edges, edgeColor);
-            }
-            else{
-                Array.prototype.push.apply(edges, [0,0,0,0]);
+    onDetectFinished: function(onFinished){
+        // pad missing edges. edge detected image will be smaller than 
+        // original because cannot determine edges at image edges
+        var data = this.getDataArr();
+        var edges = this.tmp.edges;
+
+        var missingPixels = (data.length*data[0].length - edges.length)/4;
+        var filter = [255,255,255,255];
+
+        for(var i = 0; i < missingPixels; i++){
+            for(var j = 0; j < filter.length; j++){
+                edges.push(filter[j]);
             }
         }
+        
+        this.context.putImageData(
+            new ImageData(
+            new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
+            0, 0);
 
-        var onConvolutionDone = function(){
-            // pad missing edges. edge detected image will be smaller than 
-            // original because cannot determine edges at image edges
-            var missingPixels = (data.length*data[0].length - edges.length)/4;
-            var filter = [255,255,255,255];
+        onFinished();
+    },
 
-            for(var i = 0; i < missingPixels; i++){
-                for(var f of filter){
-                    edges.push(f);
-                }
-            }
-            
-            this.context.putImageData(
-                new ImageData(
-                new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
-                0, 0);
+    doEdgeDetect: function(ed, onFinished){
+        this.tmp.edges = []; // keep track of pixels that are edges
+        this.tmp.edgeColor = [0, 0, 0, 255]; // color to mark edge
 
-            onFinished();
-
-        }.bind(this);
-
-        ed.doDetect(this, onConvoluted, onConvolutionDone);
+        ed.doDetect(this, this.onDetectOne.bind(this), this.onDetectFinished.bind(this, onFinished));
     },
 
     getDataArr: function(){

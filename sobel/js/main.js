@@ -7,11 +7,17 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: '500',
-        height: '360',
+        width: '600',
+        height: '440',
         imageUrl: 'img/phillylove.jpg'
     }
 }
+
+var filters = {
+    'greyscale': new Filter({type: 'greyscale'}),
+    'gaussian': new Filter({type: 'gaussian'}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 40})
+} 
 
 function init(){
     // create canvas and add image to it 
@@ -21,26 +27,19 @@ function init(){
 }
 
 function filterIt(canvas){
-    // simplify image by making it greyscale
-    var greyscale = new Filter({type: 'greyscale'});
-    canvas.applyFilter(greyscale);
-    
-    var gaussian = new Filter({type: 'gaussian'});
-    // canvas.applyFilter(gaussian);
-
-    // apply sobel 
-    var sobel = new EdgeDetect({kernel: 'sobel', threshold: 40});
-    
     var timer = {
         start: new Date(), 
         end: null
     }
-    canvas.doEdgeDetect(sobel, function(){
-        // on edge detection done
+
+    // simplify image by making it greyscale
+    canvas.applyFilter(filters['greyscale']);
+    // canvas.applyFilter(gaussian);
+    canvas.doEdgeDetect(filters['sobel'], function(){
+        // on edge detection done, display time taken
         timer.end = new Date();
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
     });
-
 }
 
 function pipeImage(c){
