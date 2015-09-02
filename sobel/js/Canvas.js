@@ -92,8 +92,6 @@ Canvas.prototype = {
     onDetectOne: function(edges, edgeColor, index, isEdge, magnitude){
         // on convoluted callback, for each window that starts 
         // with pixel at index (top left corner)
-        // var edges = this.tmp.edges;
-        // var edgeColor = this.tmp.edgeColor;
         
         // if window is an edge, mark as such with color, 
         if(isEdge){

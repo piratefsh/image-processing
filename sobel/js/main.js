@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: '600',
-        height: '440',
+        width: 600/2,
+        height: 440/2,
         imageUrl: 'img/phillylove.jpg'
     }
 }
@@ -68,7 +68,7 @@ function pipeVideo(c){
                 c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
                 filterIt(c);
 
-            }, 33);
+            }, 40);
         }, false);
     }, function(e){error(e)})
 }
