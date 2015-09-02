@@ -16,10 +16,10 @@ EdgeDetect.prototype = {
         }
     },
 
-    isSobelEdge: function(w){
+    sobelMagnitude: function(w){
         // convolutes 3x3 pixel window through Sobel kernel 
         // and returns if exceeds threshold
-        var threshold = this.options.threshold;
+        
         var kernelY = [
                     [-1, 0, 1], 
                     [-2, 0, 2],
@@ -40,8 +40,7 @@ EdgeDetect.prototype = {
 
         var magnitude = Math.sqrt(Math.ceil(Math.pow(sumX, 2) + Math.pow(sumY, 2)));
         
-        // mark as 1 if it exceeds threshold
-        return magnitude > threshold;
+        return magnitude;
     },
 
     sobel: function(c, onConvoluted, onDoneConvoluting){
@@ -66,7 +65,8 @@ EdgeDetect.prototype = {
                 [data[r3], data[r3+1], data[r3+2]],
                 ]
 
-            onConvoluted(i, this.isSobelEdge(pxWindow));
+            var magnitude = this.sobelMagnitude(pxWindow);
+            onConvoluted(i, magnitude > this.options.threshold, magnitude);
         }
         onDoneConvoluting();
     }

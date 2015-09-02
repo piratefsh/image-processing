@@ -88,24 +88,28 @@ Canvas.prototype = {
 
     doEdgeDetect: function(ed){
         var edges = []; // keep track of pixels that are edges
-        var edgeColor = [255, 255, 0, 255]; // color to mark edge
+        var edgeColor = [0, 0, 0, 255]; // color to mark edge
         var data = this.getDataArr();
 
         // callbacks to draw yellow lines on edges
-        var onConvoluted = function(index, isEdge){
+        var onConvoluted = function(index, isEdge, magnitude){
             // on convoluted callback, for each window that starts 
             // with pixel at index (top left corner)
             
             // if window is an edge, mark as such with color, 
             // else just print original pixel color
             if(isEdge){
-                Array.prototype.push.apply(edges, edgeColor);
+                var color = edgeColor.slice();
+                //scale transparency, max magnitude is 255*4
+                color[3] = magnitude/4; 
+                // trace(magnitude)
+                Array.prototype.push.apply(edges, color);
             }
             else{
                 var transparentPix = data[index].slice();
 
                 // make pix slightly transparent
-                transparentPix[3] = 200;
+                transparentPix[3] = 0;
                 Array.prototype.push.apply(edges, transparentPix);
             }
         }
@@ -113,10 +117,21 @@ Canvas.prototype = {
         var onConvolutionDone = function(){
             // pad missing edges. edge detected image will be smaller than 
             // original because cannot determine edges at image edges
-            var missing = data.length*data[0].length - edges.length
-            for(var i = 0; i < missing/4; i++){
-                Array.prototype.unshift.apply(edges, edgeColor);
+            var missingPixels = (data.length*data[0].length - edges.length)/4;
+            var padding = [];
+
+            for(var i = 0; i < missingPixels; i++){
+                padding.push(edgeColor);
             }
+
+            padding = padding.reduce(function(prev, curr){
+                for(var thing of curr){
+                    prev.push(thing);
+                }
+                return prev;
+            }, []);
+
+            Array.prototype.unshift.apply(edges, padding);
 
             // overwrite image with the edges
             this.context.putImageData(
