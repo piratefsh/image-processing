@@ -34,8 +34,8 @@ EdgeDetect.prototype = {
         var data = c.getDataArr();
 
         // convolution kernels
-        var kernelX = this.kernels['sobel'].y;
-        var kernelY = this.kernels['sobel'].x;
+        var kernelX = this.kernels['sobel'].x;
+        var kernelY = this.kernels['sobel'].y;
 
         var kernelSize = kernelX.length;
 
@@ -59,6 +59,7 @@ EdgeDetect.prototype = {
             }
             var magnitude = Math.sqrt(Math.ceil(Math.pow(sumX, 2) + Math.pow(sumY, 2)));
             var exceedsThreshold = magnitude > this.options.threshold;
+            
             onConvoluted(i, exceedsThreshold, magnitude);
         }
         onDoneConvoluting();
