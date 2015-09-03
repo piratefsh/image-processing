@@ -4,7 +4,7 @@ function EdgeDetect(opt){
     this.options = opt;
     this.kernels = {
         'sobel':{
-            x:  [[-1, 0, 1], 
+            x:  [[-1, 0, 1],
                 [-2, 0, 2],
                 [-1, 0, 1]],
             y:  [[-1, -2, -1],
@@ -17,7 +17,7 @@ function EdgeDetect(opt){
 EdgeDetect.prototype = {
     doDetect: function(a, b, c){
         switch(this.options.kernel){
-            case 'sobel': 
+            case 'sobel':
                 this.sobel(a, b, c);
                 return;
             default:
@@ -27,6 +27,8 @@ EdgeDetect.prototype = {
     },
 
     sobel: function(c, onDoneConvoluting){
+        // var s = new Date();
+
         var context = c.context;
         var canvas = c.canvas;
 
@@ -45,14 +47,12 @@ EdgeDetect.prototype = {
         // math to get 3x3 window of pixels because image data given is just a 1D array of pixels
         var maxPixelOffset = canvas.width * 2 + kernelSize - 1;
 
-        var magnitudes = [];
-
-        // var s = new Date();
-
         // optimizations
         var SQRT = Math.sqrt;
 
-        for(var i = 0; i + maxPixelOffset < data.length; i++){
+        var length = data.length - maxPixelOffset
+        var magnitudes = new Array(length)
+        for(var i = 0; i < length; i++){
             // sum of each pixel * kernel value
             var sumX = 0, sumY = 0;
             for(var x = 0; x < kernelSize; x++){
@@ -65,14 +65,11 @@ EdgeDetect.prototype = {
                     sumY += r * kernelY[y][x];
                 }
             }
-
-            var magnitude = SQRT(sumX*sumX + sumY*sumY);
-            magnitudes.push(magnitude);
+            magnitudes[i] = SQRT(sumX*sumX + sumY*sumY);
         }
 
+        onDoneConvoluting(magnitudes, this.options.threshold);
         // var e = new Date();
         // trace("time taken for block", e - s)
-        onDoneConvoluting(magnitudes, this.options.threshold);
     }
 }
-
