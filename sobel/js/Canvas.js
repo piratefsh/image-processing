@@ -24,7 +24,7 @@ Canvas.prototype = {
         var _dimensions = this.dimensions;
         var _context = this.context;
 
-        // create image 
+        // create image
         var img = new Image();
         img.src = url;
         img.onload = function(){
@@ -35,7 +35,7 @@ Canvas.prototype = {
             // offsets to center image
             var imgOffsetHeight = -(imgHeight - _dimensions.height)/2
             var imgOffsetWidth = -(imgWidth - _dimensions.width)/2
-            
+
             _context.drawImage(img, imgOffsetWidth, imgOffsetHeight, imgWidth, imgHeight);
 
             // do callback on image load
@@ -90,44 +90,30 @@ Canvas.prototype = {
     },
 
     onDetectFinished: function(onFinished, magnitudes, threshold){
-        // pad missing edges. edge detected image will be smaller than 
+        // pad missing edges. edge detected image will be smaller than
         // original because cannot determine edges at image edges
 
-
-        var edges = [];
-        // timer('start');
-        for(var i = 0; i < magnitudes.length; i++){
-            var m = magnitudes[i];
-            if(m > threshold){
-                //outline with scale transparency, max magnitude is 255*4
-                edges.push(0,0,0,m/3)
-            }
-            else{
-                edges.push(255,255,255,255)
-            }
-        }
-
-
-        // pad missing
         var dataLength = this.canvas.width * this.canvas.height * 4;
-        var missingPixels = (dataLength - edges.length)/4;
-
-        for(var i = 0; i < missingPixels*4; i++){
-            edges.push(255);
+        var edges = new Array(dataLength);
+        var i = dataLength;
+        while (i--) {
+            edges[i] = 0;
+            if(!(i % 4)) {
+              var m = magnitudes[i / 4];
+              if(m && m > threshold) {
+                edges[i + 3] = m / 4;
+              }
+            }
         }
-        
+
         this.context.putImageData(
             new ImageData(new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
             0, 0);
 
-
         onFinished();
-        // timer('end');
-
     },
 
     doEdgeDetect: function(ed, onFinished){
-
         // do detection with set callbacks
         ed.doDetect(this, this.onDetectFinished.bind(this, onFinished));
     },
@@ -138,10 +124,14 @@ Canvas.prototype = {
         var imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
         var data = imageData.data;
 
-        var arr = [];
-        for(var i = 0; i < data.length; i += 4){
-            arr.push([data[i], data[i+1], data[i+2], data[i+3]]);
+        var length = data.length;
+        var arr = new Array(length / 4);
+        var i = 0;
+        while (i < length) {
+          arr[i / 4] = [data[i], data[i+1], data[i+2], data[i+3]];
+          i += 4;
         }
+
         return arr;
     },
     saveState: function(filename){
