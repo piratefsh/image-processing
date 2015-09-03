@@ -95,15 +95,16 @@ Canvas.prototype = {
 
         var dataLength = this.canvas.width * this.canvas.height * 4;
         var edges = new Array(dataLength);
-        var i = dataLength;
-        while (i--) {
+        var i = 0;
+        while(i < dataLength){
             edges[i] = 0;
             if(!(i % 4)) {
               var m = magnitudes[i / 4];
               if(m && m > threshold) {
-                edges[i + 3] = m / 4;
+                edges[i - 1] = m / 4;
               }
             }
+            i++;
         }
 
         this.context.putImageData(

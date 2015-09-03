@@ -74,7 +74,7 @@ function pipeVideo(c){
                 c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
                 filterIt(c);
 
-            }, 33);
+            }, 10);
         }, false);
     }, function(e){error(e)})
 }
