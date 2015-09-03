@@ -100,10 +100,10 @@ Canvas.prototype = {
             var m = magnitudes[i];
             if(m > threshold){
                 //outline with scale transparency, max magnitude is 255*4
-                edges.push(0,0,0,m/4)
+                edges.push(0,0,0,m/3)
             }
             else{
-                edges.push(0,0,0,0)
+                edges.push(255,255,255,255)
             }
         }
 
@@ -144,4 +144,11 @@ Canvas.prototype = {
         }
         return arr;
     },
+    saveState: function(filename){
+        // download canvas state
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = this.canvas.toDataURL();
+        link.click();
+    }
 }

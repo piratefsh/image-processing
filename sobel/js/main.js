@@ -16,7 +16,7 @@ var options = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 40})
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 60})
 } 
 
 function init(){
@@ -24,6 +24,13 @@ function init(){
     canvas = new Canvas(options.canvas);
     // pipeImage(canvas);
     pipeVideo(canvas);
+
+    //set snapshot button
+    var btnSnapshot = document.getElementById('btn-snapshot');
+    btnSnapshot.onclick = function(){
+        var filename = (new Date()).toString() + "-edge-detect.jpg";
+        canvas.saveState(filename);
+    }
 }
 
 function filterIt(canvas){
