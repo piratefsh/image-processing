@@ -7,23 +7,24 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600,
-        height: 440,
-        imageUrl: 'img/phillylove.jpg'
+        width: 600/2,
+        height: 440/2,
+        imageUrl: 'img/shapes.jpg'
     }
 }
 
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 60})
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 100}),
+    'houghLines': new HoughTransform({type: 'lines'})
 } 
 
 function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
-    // pipeImage(canvas);
-    pipeVideo(canvas);
+    pipeImage(canvas);
+    // pipeVideo(canvas);
 
     //set snapshot button
     var btnSnapshot = document.getElementById('btn-snapshot');
@@ -46,6 +47,9 @@ function filterIt(canvas){
         // on edge detection done, display time taken
         timer.end = new Date();
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
+        
+        // detect lines using Hough Transform
+        canvas.doHoughTransform(filters['houghLines']);
     });
 }
 

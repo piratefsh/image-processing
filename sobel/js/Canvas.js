@@ -11,6 +11,7 @@ function Canvas(options){
     this.canvas.height = options.height;
 
     this.dimensions = this.canvas.getBoundingClientRect();
+    this.edges = null; //save detected edge magnitudes
 
 }
 
@@ -92,7 +93,7 @@ Canvas.prototype = {
     onDetectFinished: function(onFinished, magnitudes, threshold){
         // pad missing edges. edge detected image will be smaller than
         // original because cannot determine edges at image edges
-
+        this.edges = magnitudes;
         var dataLength = this.canvas.width * this.canvas.height * 4;
         var edges = new Array(dataLength);
         var i = 0;
@@ -100,7 +101,7 @@ Canvas.prototype = {
             edges[i] = 0;
             if(!(i % 4)) {
               var m = magnitudes[i / 4];
-              if(m && m > threshold) {
+              if(m != 0) {
                 edges[i - 1] = m / 4;
               }
             }
@@ -114,9 +115,20 @@ Canvas.prototype = {
         onFinished();
     },
 
+
     doEdgeDetect: function(ed, onFinished){
         // do detection with set callbacks
         ed.doDetect(this, this.onDetectFinished.bind(this, onFinished));
+    },
+
+    doHoughTransform: function(ht){
+        ht.doTransform(this, this.edges);
+    },
+
+    draw: function(data){
+        this.context.putImageData(
+            new ImageData(new Uint8ClampedArray(data), this.canvas.width, this.canvas.height),
+            0, 0);
     },
 
     getDataArr: function(){

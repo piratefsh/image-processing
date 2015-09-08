@@ -65,11 +65,12 @@ EdgeDetect.prototype = {
                     sumY += r * kernelY[y][x];
                 }
             }
-            magnitudes[i] = SQRT(sumX*sumX + sumY*sumY);
+            var mag = SQRT(sumX*sumX + sumY*sumY);
+
+            // set magnitude to 0 if doesn't exceed threshold, else set to magnitude
+            magnitudes[i] = mag > this.options.threshold? mag : 0;
         }
 
-        onDoneConvoluting(magnitudes, this.options.threshold);
-        // var e = new Date();
-        // trace("time taken for block", e - s)
+        onDoneConvoluting(magnitudes);
     }
 }
