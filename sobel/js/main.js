@@ -49,7 +49,7 @@ function filterIt(canvas){
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
         
         // detect lines using Hough Transform
-        canvas.doHoughTransform(filters['houghLines']);
+        // canvas.doHoughTransform(filters['houghLines']);
     });
 }
 
