@@ -38,8 +38,8 @@ HoughTransform.prototype = {
     lines: function(c, edges){
         var width = c.canvas.width;
         var height = c.canvas.height;
-        var centerX = Math.floor(width/2);
-        var centerY = Math.floor(height/2);
+        var centerX = Math.ceil(width/2);
+        var centerY = Math.ceil(height/2);
 
         var acc = this.accumulator;
 
@@ -52,8 +52,9 @@ HoughTransform.prototype = {
         for(var x = -centerX; x < centerX; x++){
             for(var y = -centerY; y < centerY; y++){
                 var i = (x + centerX) * width + (y + centerY);
+                
                 // don't calculate for non-edges
-                if(edges[i] == 0){
+                if(i in edges && edges[i] == 0){
                     continue;
                 }
 
@@ -64,10 +65,10 @@ HoughTransform.prototype = {
 
                     // increment accumulator by 1 for every r found
                     if([r, rad] in acc){
-                        acc[[r, rad]].push(x);
+                        acc[[r, rad]].push(y);
                     }
                     else{
-                        acc[[r, rad]] = [x];
+                        acc[[r, rad]] = [y];
                     }
                 }
 
@@ -111,13 +112,13 @@ HoughTransform.prototype = {
                 // all possible xs
                 for(var j = 0; j < xCoords.length; j++){
                     var x = xCoords[j];
-                    var y = Math.floor((r - x * cos[rad]) / sin[rad]);
+                    var y = Math.floor((r - x * sin[rad]) / cos[rad]);
 
                     var idx = x * width + y;
                     // if(edges[idx])
                     {
                         c.context.fillStyle = 'blue';
-                        c.context.fillRect(y+centerY, x+centerX, 1, 1);
+                        c.context.fillRect(x+centerX, y+centerY, 1, 1);
                     }
                 }
             }
