@@ -8,15 +8,15 @@ var options = {
     canvas: {
         id: 'playground',
         width: 600/2,
-        height: 440/2,
-        imageUrl: 'img/squares.jpg'
+        height: 600/2,
+        imageUrl: 'img/lines.png'
     }
 }
 
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 100}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 200}),
     'houghLines': new HoughTransform({type: 'lines'})
 } 
 

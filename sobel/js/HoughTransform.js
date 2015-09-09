@@ -71,7 +71,6 @@ HoughTransform.prototype = {
                         acc[[r, rad]] = [y];
                     }
                 }
-
             }
         }
         return acc;
@@ -93,8 +92,8 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 100; //min num of points on line
-
+        var threshold = 200; //min num of points on line
+        var colorG = 0
         // draw lines detected from accumulator data. takes in original image data
         for(var i = 0; i < rhoRads.length; i++){
             // get xCoords associated with rho and radian pair
@@ -108,6 +107,7 @@ HoughTransform.prototype = {
                 rd      = rd.split(',');
                 var r   = rd[0];    //rho val
                 var rad = rd[1];    //radian val
+                colorG++
 
                 // all possible xs
                 for(var j = 0; j < xCoords.length; j++){
@@ -117,8 +117,8 @@ HoughTransform.prototype = {
                     var idx = x * width + y;
                     // if(edges[idx])
                     {
-                        c.context.fillStyle = 'blue';
-                        c.context.fillRect(x+centerX, y+centerY, 1, 1);
+                        c.context.fillStyle = 'rgb(255,' + colorG + ',0)';
+                        c.context.fillRect(x+centerY, y+centerX, 1, 1);
                     }
                 }
             }
