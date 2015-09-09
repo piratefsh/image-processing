@@ -16,7 +16,7 @@ var options = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 100}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 150}),
     'houghLines': new HoughTransform({type: 'lines'})
 } 
 
