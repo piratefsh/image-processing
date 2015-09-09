@@ -38,8 +38,8 @@ HoughTransform.prototype = {
     lines: function(c, edges){
         var width = c.canvas.width;
         var height = c.canvas.height;
-        // var centerX = Math.floor(width/2);
-        // var centerY = Math.floor(height/2);
+        var centerX = Math.floor(width/2);
+        var centerY = Math.floor(height/2);
 
         var acc = this.accumulator;
 
@@ -49,31 +49,29 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //detects lines and returns array with line locations
-        for(var i = 0; i < edges.length; i++){
-            // don't calculate for non-edges
-            if(edges[i] == 0){
-                continue;
-            }
-
-            // get x, y relative to center of image
-            var x = (i / width) 
-            var y = (i % width)
-
-
-            // calculate r for thetas
-            for(var j = 0; j < radians.length; j++){
-                var rad = radians[j];
-                var r = Math.floor(x * cos[rad] + y * sin[rad]);
-                if(r < 0) trace(r)
-                // increment accumulator by 1 for every r found
-                if([r, rad] in acc){
-                    acc[[r, rad]].push(x);
+        for(var x = -centerX; x < centerX; x++){
+            for(var y = -centerY; y < centerY; y++){
+                var i = (x + centerX) * width + (y + centerY);
+                // don't calculate for non-edges
+                if(edges[i] == 0){
+                    continue;
                 }
-                else{
-                    acc[[r, rad]] = [x];
-                }
-            }
 
+                // calculate r for thetas
+                for(var j = 0; j < radians.length; j++){
+                    var rad = radians[j];
+                    var r = Math.floor(x * cos[rad] + y * sin[rad]);
+
+                    // increment accumulator by 1 for every r found
+                    if([r, rad] in acc){
+                        acc[[r, rad]].push(x);
+                    }
+                    else{
+                        acc[[r, rad]] = [x];
+                    }
+                }
+
+            }
         }
         return acc;
     },
@@ -85,6 +83,8 @@ HoughTransform.prototype = {
         var data = c.getDataArr();
         var width = c.canvas.width;
         var height = c.canvas.height;
+        var centerX = Math.floor(width/2);
+        var centerY = Math.floor(height/2);
 
         //use precalculated values
         var sin = this.tables.sin;
@@ -92,20 +92,20 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 200; //min num of points on line
+        var threshold = 100; //min num of points on line
 
         // draw lines detected from accumulator data. takes in original image data
-        for(var i = 0; i < edges.length; i++){
+        for(var i = 0; i < rhoRads.length; i++){
             // get xCoords associated with rho and radian pair
             var rd = rhoRads[i];
             var xCoords = acc[rd];
 
             //##TODO: check for local maxima
 
-            if(xCoords && xCoords.length > threshold)
+            if(xCoords.length > threshold)
             {
-                rd = rd.split(',');
-                var r = rd[0];      //rho val
+                rd      = rd.split(',');
+                var r   = rd[0];    //rho val
                 var rad = rd[1];    //radian val
 
                 // all possible xs
@@ -113,13 +113,11 @@ HoughTransform.prototype = {
                     var x = xCoords[j];
                     var y = Math.floor((r - x * cos[rad]) / sin[rad]);
 
-                    if(y == NaN) continue;
-
                     var idx = x * width + y;
                     // if(edges[idx])
                     {
                         c.context.fillStyle = 'blue';
-                        c.context.fillRect(y, x, 1, 1);
+                        c.context.fillRect(y+centerY, x+centerX, 1, 1);
                     }
                 }
             }

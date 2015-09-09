@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/2,
-        height: 440/2,
+        width: 600/3,
+        height: 440/3,
         imageUrl: 'img/twolinesandcircle.png'
     }
 }
