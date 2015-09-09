@@ -64,13 +64,13 @@ HoughTransform.prototype = {
             for(var j = 0; j < radians.length; j++){
                 var rad = radians[j];
                 var r = Math.floor(x * cos[rad] + y * sin[rad]);
-
+                if(r < 0) trace(r)
                 // increment accumulator by 1 for every r found
                 if([r, rad] in acc){
-                    acc[[r, rad]] += 1;
+                    acc[[r, rad]].push(x);
                 }
                 else{
-                    acc[[r, rad]] = 1;
+                    acc[[r, rad]] = [x];
                 }
             }
 
@@ -81,7 +81,7 @@ HoughTransform.prototype = {
     drawLines: function(c, edges){
         // list of all r, deg pairs in accumulator
         var acc = this.accumulator;
-        var rhoDegs = Object.keys(acc);
+        var rhoRads = Object.keys(acc);
         var data = c.getDataArr();
         var width = c.canvas.width;
         var height = c.canvas.height;
@@ -92,22 +92,29 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 40; //min num of points on line
+        var threshold = 200; //min num of points on line
 
         // draw lines detected from accumulator data. takes in original image data
         for(var i = 0; i < edges.length; i++){
-            // check if local maxima
-            var rd = rhoDegs[i];
-            var numPoints = acc[rd];
-            if(numPoints > threshold)
+            // get xCoords associated with rho and radian pair
+            var rd = rhoRads[i];
+            var xCoords = acc[rd];
+
+            //##TODO: check for local maxima
+
+            if(xCoords && xCoords.length > threshold)
             {
                 rd = rd.split(',');
                 var r = rd[0];      //rho val
                 var rad = rd[1];    //radian val
 
                 // all possible xs
-                for(var x = 0; x < width; x++){
-                    var y =  parseInt((r - x * cos[rad]) / sin[rad]);
+                for(var j = 0; j < xCoords.length; j++){
+                    var x = xCoords[j];
+                    var y = Math.floor((r - x * cos[rad]) / sin[rad]);
+
+                    if(y == NaN) continue;
+
                     var idx = x * width + y;
                     // if(edges[idx])
                     {

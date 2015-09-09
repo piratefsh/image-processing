@@ -7,16 +7,16 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/3,
-        height: 440/3,
-        imageUrl: 'img/shapes.jpg'
+        width: 600/2,
+        height: 440/2,
+        imageUrl: 'img/twolinesandcircle.png'
     }
 }
 
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 150}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 1}),
     'houghLines': new HoughTransform({type: 'lines'})
 } 
 
