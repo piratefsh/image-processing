@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/2,
-        height: 440/2,
+        width: 600/3,
+        height: 440/3,
         imageUrl: 'img/shapes.jpg'
     }
 }
@@ -49,7 +49,7 @@ function filterIt(canvas){
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
         
         // detect lines using Hough Transform
-        // canvas.doHoughTransform(filters['houghLines']);
+        canvas.doHoughTransform(filters['houghLines']);
     });
 }
 
