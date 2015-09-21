@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600,
-        height: 400,
+        width: 600/3,
+        height: 400/3,
         imageUrl: 'img/flowers.jpg'
     }
 }
@@ -48,11 +48,12 @@ function filterIt(canvas){
         // on edge detection done, display time taken
         timer.end = new Date();
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
+
+        // thin edges first
+        // canvas.doEdgeThinning(filters['edgeThinner']);
         
         // detect lines using Hough Transform
-        // canvas.doHoughTransform(filters['houghLines']);
-
-        canvas.doEdgeThinning(filters['edgeThinner']);
+        canvas.doHoughTransform(filters['houghLines']);
     });
 }
 

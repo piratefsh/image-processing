@@ -110,6 +110,7 @@ EdgeThinner.prototype = {
     drawLines: function(edges, width, height){
         // draw the thinned edge
         var context = this.c.context;
+        context.clearRect(0,0,width,height);
         var count = 0;
         context.fillStyle = 'rgb(255,0,0)';
         for(var x = 0; x < width; x++){
