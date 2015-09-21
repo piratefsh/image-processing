@@ -24,7 +24,6 @@ Canvas.prototype = {
 
         var _dimensions = this.dimensions;
         var _context = this.context;
-
         // create image
         var img = new Image();
         img.src = url;
@@ -120,6 +119,12 @@ Canvas.prototype = {
     doEdgeDetect: function(ed, onFinished){
         // do detection with set callbacks
         ed.doDetect(this, this.onDetectFinished.bind(this, onFinished));
+    },
+
+    doEdgeThinning: function(et){
+        if(this.edges && this.edges.length > 0){
+            et.doThinning(this, this.edges);
+        }
     },
 
     doHoughTransform: function(ht){

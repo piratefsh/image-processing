@@ -12,7 +12,7 @@ function HoughTransform(options){
         cos: {}
     }
 
-    for(var deg = 0; deg < 360; deg++){
+    for(var deg = 0; deg < 360; deg+=0.5){
         var rad = (deg * Math.PI / 180);
         this.tables.sin[rad] = Math.sin(rad);
         this.tables.cos[rad] = Math.cos(rad);
@@ -65,10 +65,14 @@ HoughTransform.prototype = {
 
                     // increment accumulator by 1 for every r found
                     if([r, rad] in acc){
-                        acc[[r, rad]].push(y);
+                        acc[[r, rad]].x.push(x);
+                        acc[[r, rad]].y.push(y);
                     }
                     else{
-                        acc[[r, rad]] = [y];
+                        acc[[r, rad]] = {
+                            x: [x],
+                            y: [y]
+                        }
                     }
                 }
             }
@@ -92,32 +96,52 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 200; //min num of points on line
+        var threshold = 140; //min num of points on line
         var colorG = 0
+        var colorG = 0
+
         // draw lines detected from accumulator data. takes in original image data
         for(var i = 0; i < rhoRads.length; i++){
             // get xCoords associated with rho and radian pair
             var rd = rhoRads[i];
-            var xCoords = acc[rd];
+            var xCoords = acc[rd].x;
+            var yCoords = acc[rd].y;
 
             //##TODO: check for local maxima
+            rd      = rd.split(',');
+            var r   = rd[0];    //rho val
+            var rad = rd[1];    //radian val
+            colorG++;    
 
             if(xCoords.length > threshold)
             {
-                rd      = rd.split(',');
-                var r   = rd[0];    //rho val
-                var rad = rd[1];    //radian val
-                colorG++
-
                 // all possible xs
                 for(var j = 0; j < xCoords.length; j++){
                     var x = xCoords[j];
-                    var y = Math.floor((r - x * sin[rad]) / cos[rad]);
+                    // var y = Math.floor((r - x * sin[rad]) / cos[rad]);
+                    var y = Math.floor((r - x * cos[rad]) / sin[rad]);
 
                     var idx = x * width + y;
                     // if(edges[idx])
                     {
                         c.context.fillStyle = 'rgb(255,' + colorG + ',0)';
+                        c.context.fillRect(y+centerX, x+centerY, 1, 1);
+                    }
+                }
+            }
+
+            if(yCoords.length > threshold)
+            {
+                // all possible xs
+                for(var j = 0; j < yCoords.length; j++){
+                    var x = yCoords[j];
+                    // var y = Math.floor((r - x * sin[rad]) / cos[rad]);
+                    var y = Math.floor((r - x * sin[rad]) / cos[rad]);
+
+                    var idx = x * width + y;
+                    // if(edges[idx])
+                    {
+                        c.context.fillStyle = 'rgb(0,' + colorG + ',255)';
                         c.context.fillRect(x+centerY, y+centerX, 1, 1);
                     }
                 }

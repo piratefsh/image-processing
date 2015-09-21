@@ -7,17 +7,18 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/2,
-        height: 600/2,
-        imageUrl: 'img/lines.png'
+        width: 300,
+        height: 200,
+        imageUrl: 'img/noguchi01.jpg'
     }
 }
 
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 200}),
-    'houghLines': new HoughTransform({type: 'lines'})
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 120}),
+    'houghLines': new HoughTransform({type: 'lines'}),
+    'edgeThinner': new EdgeThinner()
 } 
 
 function init(){
@@ -49,7 +50,9 @@ function filterIt(canvas){
         document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
         
         // detect lines using Hough Transform
-        canvas.doHoughTransform(filters['houghLines']);
+        // canvas.doHoughTransform(filters['houghLines']);
+
+        canvas.doEdgeThinning(filters['edgeThinner']);
     });
 }
 
