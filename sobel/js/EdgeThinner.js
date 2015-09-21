@@ -21,7 +21,7 @@ EdgeThinner.prototype = {
         this.c = canvas;
         this.edges = edges;
         this.createRotations();
-        this.findSkeleton();
+        return this.findSkeleton();
     },
 
     createRotations: function(){
@@ -49,7 +49,6 @@ EdgeThinner.prototype = {
                 curr = newKern;
             }
         }
-        trace(kernels)
     },
 
     findSkeleton: function(){
@@ -70,7 +69,6 @@ EdgeThinner.prototype = {
                 // for each pixel 
                 for(var x = 0; x < height; x++){
                     for(var y = 0; y < width; y++){
-                        // pixel index
                         // 3x3 window of neighbours
                         var keepEdge = true;
                         for(var k = -1; k <= 1; k++){
@@ -79,6 +77,8 @@ EdgeThinner.prototype = {
                                 var kx = k + 1;
                                 var ky = l + 1;
                                 var kxy = kernel[kx][ky];
+                                
+                                // pixel index
                                 var edgeIdx = ((x+k) * width-1) + (y+l) -1;
                                 var centerIdx = ((x) * width-1) + (y) -1;
 
@@ -86,7 +86,7 @@ EdgeThinner.prototype = {
                                     continue;
                                 }
 
-                                // perform or
+                                // check if pixels exist in accordance to kernel
                                 var e = edges[edgeIdx];
                                 if(kxy !== null){
                                     var isOne = (kxy == 1 && e)
@@ -106,6 +106,7 @@ EdgeThinner.prototype = {
             }
         }
         this.drawLines(newEdges, width, height)
+        return newEdges;
     },
     drawLines: function(edges, width, height){
         // draw the thinned edge

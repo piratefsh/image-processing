@@ -7,10 +7,14 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/2,
-        height: 600/2,
+        width: 600/3,
+        height: 600/3,
         imageUrl: 'img/flowers.jpg'
     }
+}
+var timer = {
+    start: new Date(), 
+    end: null
 }
 
 var filters = {
@@ -36,25 +40,24 @@ function init(){
 }
 
 function filterIt(canvas){
-    var timer = {
-        start: new Date(), 
-        end: null
-    }
-
     // simplify image by making it greyscale
     canvas.applyFilter(filters['greyscale']);
+    
     // canvas.applyFilter(gaussian);
-    canvas.doEdgeDetect(filters['sobel'], function(){
-        // on edge detection done, display time taken
-        timer.end = new Date();
-        document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
+    canvas.doEdgeDetect(filters['sobel']);
 
-        // thin edges first
-        // canvas.doEdgeThinning(filters['edgeThinner']);
-        
-        // detect lines using Hough Transform
-        canvas.doHoughTransform(filters['houghLines']);
-    });
+    // thin edges first
+    canvas.doEdgeThinning(filters['edgeThinner']);
+
+    // detect lines
+    canvas.doHoughTransform(filters['houghLines']);
+    
+    showTimeTaken();
+}
+
+function showTimeTaken(){
+    timer.end = new Date();
+    document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
 }
 
 function pipeImage(c){

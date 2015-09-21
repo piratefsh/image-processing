@@ -18,8 +18,7 @@ EdgeDetect.prototype = {
     doDetect: function(a, b, c){
         switch(this.options.kernel){
             case 'sobel':
-                this.sobel(a, b, c);
-                return;
+                return this.sobel(a, b, c);
             default:
                 error('No such edge detector exists!')
                 return;
@@ -71,6 +70,6 @@ EdgeDetect.prototype = {
             magnitudes[i] = mag > this.options.threshold? mag : 0;
         }
 
-        onDoneConvoluting(magnitudes);
+        return magnitudes;
     }
 }

@@ -89,7 +89,7 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    onDetectFinished: function(onFinished, magnitudes, threshold){
+    onDetectFinished: function(magnitudes){
         // pad missing edges. edge detected image will be smaller than
         // original because cannot determine edges at image edges
         var dataLength = this.canvas.width * this.canvas.height * 4;
@@ -111,24 +111,32 @@ Canvas.prototype = {
         this.context.putImageData(
             new ImageData(new Uint8ClampedArray(edges), this.canvas.width, this.canvas.height),
             0, 0);
-
-        onFinished();
     },
 
 
-    doEdgeDetect: function(ed, onFinished){
+    doEdgeDetect: function(ed){
         // do detection with set callbacks
-        ed.doDetect(this, this.onDetectFinished.bind(this, onFinished));
+        var magnitudes = ed.doDetect(this)
+        this.onDetectFinished(magnitudes)
     },
 
-    doEdgeThinning: function(et){
+    doEdgeThinning: function(et, onFinished){
         if(this.edges && this.edges.length > 0){
-            et.doThinning(this, this.edges);
+            this.edges = et.doThinning(this, this.edges);
+        }
+        else{
+            error('bad edges')
+            
         }
     },
 
     doHoughTransform: function(ht){
-        ht.doTransform(this, this.edges);
+        if(this.edges && this.edges.length > 0){
+            ht.doTransform(this, this.edges);
+        }
+        else{
+            error('bad edges')
+        }
     },
 
     draw: function(data){
