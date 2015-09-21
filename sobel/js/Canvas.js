@@ -93,7 +93,7 @@ Canvas.prototype = {
         // pad missing edges. edge detected image will be smaller than
         // original because cannot determine edges at image edges
         var dataLength = this.canvas.width * this.canvas.height * 4;
-        this.edges = new Array(dataLength);
+        this.edges = new Array(dataLength/4);
         var edges = new Array(dataLength);
         var i = 0;
         while(i < dataLength){

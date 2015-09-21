@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 300,
-        height: 200,
+        width: 600,
+        height: 400,
         imageUrl: 'img/noguchi01.jpg'
     }
 }

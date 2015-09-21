@@ -18,7 +18,7 @@ function EdgeThinner(){
 
 EdgeThinner.prototype = {
     doThinning: function(canvas, edges){
-        this.canvas = canvas;
+        this.c = canvas;
         this.edges = edges;
         this.findSkeleton();
     },
@@ -28,52 +28,70 @@ EdgeThinner.prototype = {
         var kernels = this.kernels['skeleton'];
         var iterations = 3;
 
-        var width = this.canvas.dimensions.width;
-        var height = this.canvas.dimensions.height;
-
+        var width = this.c.canvas.width;
+        var height = this.c.canvas.height;
+        var newEdges = new Array(edges.length);
         // for each kernel, apply them and rotations (TODO)
-        for(var n = 0; n < kernels.length; n++){
+        for(var times = 0; times < 1; times++){
+            for(var n = 0; n < kernels.length; n++){
+                // get a kernel 
+                var kernel = kernels[n];
+                var count = 0;
 
-            // get a kernel 
-            var kernel = kernels[n];
+                // for each pixel 
+                for(var x = 0; x < height; x++){
+                    for(var y = 0; y < width; y++){
+                        // pixel index
+                        // 3x3 window of neighbours
+                        var keepEdge = true;
+                        for(var k = -1; k <= 1; k++){
+                            for(var l = -1; l  <= 1; l++){
+                                // get kernel value for that pixel
+                                var kx = k + 1;
+                                var ky = l + 1;
+                                var kxy = kernel[kx][ky];
+                                var edgeIdx = ((x+k) * width-1) + (y+l) -1;
+                                var centerIdx = ((x) * width-1) + (y) -1;
 
-            // for each pixel 
-            for(var x = 0; x < width; x++){
-                for(var y = 0; y < height; y++){
-                    // pixel index
-                    var edgeIdx = x * width + y;
-                    // 3x3 window of neighbours
-                    for(var k = -1; k <= 1; k++){
-                        for(var l = -1; l  <= 1; l++){
-                            // get kernel value for that pixel
-                            var kx = k + 1;
-                            var ky = l + 1;
-                            var kxy = kernel[kx][ky];
+                                if(!(edgeIdx > -1 && edgeIdx < edges.length)){
+                                    continue;
+                                }
 
-                            // perform or
-                            if(kxy != null){
-                                trace(edges[edgeIdx] * kxy)
-                                edges[edgeIdx] = edges[edgeIdx] * kxy;
+                                // perform or
+                                var e = edges[edgeIdx];
+                                if(kxy !== null){
+                                    var isOne = (kxy == 1 && e)
+                                    var isZero = (kxy == 0 && !e)
+                                    if(!(isOne || isZero))
+                                    {
+                                        keepEdge = false;
+                                    }
+                                }
                             }
+                        }
+                        if(keepEdge){
+                            trace(centerIdx)
+                            newEdges[centerIdx] = 1;
                         }
                     }
                 }
             }
         }
-        trace('done thinning')
-        this.drawLines(edges)
-        trace('done drawing')
+        trace('done thinning', count)
+        this.drawLines(newEdges, width, height)
+        trace('done drawing', newEdges.length)
     },
-    drawLines: function(edges){
+    drawLines: function(edges, width, height){
         // draw the thinned edge
-        var width = this.canvas.dimensions.width;
-        var height = this.canvas.dimensions.height;
-        this.canvas.context.fillStyle = 'rgb(255,255,0)';
+        var context = this.c.context;
+        var count = 0;
+        context.fillStyle = 'rgb(255,0,0)';
         for(var x = 0; x < width; x++){
             for(var y = 0; y < height; y++){
-                var e = edges[x * width + y];
-                if(e != 0){
-                    this.canvas.context.fillRect(x, y, 1, 1);
+                var edgeIdx = (y * width) + x;
+                var e = edges[edgeIdx];
+                if(e === 1){
+                    context.fillRect(x, y, 1, 1);
                 }
             }
         }
