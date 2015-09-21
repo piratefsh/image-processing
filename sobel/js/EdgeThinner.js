@@ -20,7 +20,36 @@ EdgeThinner.prototype = {
     doThinning: function(canvas, edges){
         this.c = canvas;
         this.edges = edges;
+        this.createRotations();
         this.findSkeleton();
+    },
+
+    createRotations: function(){
+        var kernels = this.kernels['skeleton'];
+        for(var k in kernels){
+            var kern = kernels[k];
+
+            // do 3 times
+            var curr = kern;
+
+            for(var rot = 0; rot < 3; rot++){
+                // make new grid
+                var newKern = new Array(curr.length);
+                for(var i = 0; i < newKern.length; i++){
+                    newKern[i] = new Array(curr[i].length);
+                }
+
+                // put rotated
+                for(var i = 0; i < curr.length; i++){
+                    for(var j = 0; j < curr[i].length; j++){
+                        newKern[i][j] = curr[j][i];
+                    }
+                }
+                kernels.push(newKern);
+                curr = newKern;
+            }
+        }
+        trace(kernels)
     },
 
     findSkeleton: function(){
@@ -70,16 +99,13 @@ EdgeThinner.prototype = {
                             }
                         }
                         if(keepEdge){
-                            trace(centerIdx)
                             newEdges[centerIdx] = 1;
                         }
                     }
                 }
             }
         }
-        trace('done thinning', count)
         this.drawLines(newEdges, width, height)
-        trace('done drawing', newEdges.length)
     },
     drawLines: function(edges, width, height){
         // draw the thinned edge

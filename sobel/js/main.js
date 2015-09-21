@@ -9,14 +9,14 @@ var options = {
         id: 'playground',
         width: 600,
         height: 400,
-        imageUrl: 'img/noguchi01.jpg'
+        imageUrl: 'img/flowers.jpg'
     }
 }
 
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 120}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 90}),
     'houghLines': new HoughTransform({type: 'lines'}),
     'edgeThinner': new EdgeThinner()
 } 
