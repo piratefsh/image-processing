@@ -3,7 +3,7 @@
 function HoughTransform(options){
     // given an array edges, use hough transform to detect lines/etc
     this.accumulator = {};
-    this.threshold = 50;
+    this.threshold = 40;
     this.type = options.type;
 
     // precalculate tables for sin, cos and radian values
