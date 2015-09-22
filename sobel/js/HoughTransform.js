@@ -2,9 +2,16 @@
 
 function HoughTransform(options){
     // given an array edges, use hough transform to detect lines/etc
-    this.accumulator = {};
-    this.threshold = 80;
+    this.accumulators = {
+        'lines': {},
+        'circles': {}
+    };
+
+    this.threshold = 100;
     this.type = options.type;
+
+    // optional, for circle detection
+    this.radius = options.radius/2; 
 
     // precalculate tables for sin, cos and radian values
     this.tables = {
@@ -26,10 +33,13 @@ HoughTransform.prototype = {
     doTransform: function(c, edges){
         switch(this.type){
             case 'lines': 
-                var acc = this.lines(c, edges);
+                this.lines(c, edges);
                 this.drawLines(c, edges);
                 break;
             case 'circles':
+                this.circles(c, edges, this.radius);
+                this.drawCircles(c, edges, this.radius);
+
         }
     },
 
@@ -39,7 +49,7 @@ HoughTransform.prototype = {
         var centerX = Math.ceil(width/2);
         var centerY = Math.ceil(height/2);
 
-        var acc = this.accumulator;
+        var acc = this.accumulators['lines'];
 
         //use precalculated values
         var sin = this.tables.sin;
@@ -83,12 +93,77 @@ HoughTransform.prototype = {
         return acc;
     },
 
+    circles: function(c, edges, radius){
+        var acc = this.accumulators['circles'];
+        var width = c.canvas.width;
+        // for each edge pixel
+        for(var x = 0; x < width; x++){
+            for(var y = 0; y < c.canvas.height; y++){
+                var e = edges[x*width + y];
+                
+                // ignore non-edges
+                if(e == undefined || e == 0){
+                    continue;
+                }
+
+                // find circle points (a, b) where e = (x,y) can be center of circle
+                // formula: x = a + r * cos (theta), a = x - r * cos (theta)
+                //          y = b + r * sin (theta), b = y - r * sin (theta)
+
+                var sin = this.tables.sin;
+                var cos = this.tables.cos;
+                var radians = this.tables.radians;
+                var R = radius;
+                
+                // for each possible angle, find these points
+                for(var r = 0; r < radians.length; r++){
+                    var rad = radians[r];
+
+                    var a = Math.floor(x - R * cos[rad]);
+                    var b = Math.floor(y - R * sin[rad]);
+
+                    // add votes to this points in accumulator
+                    if([a,b] in acc){
+                        acc[[a,b]]++;
+                    }
+                    else{
+                        acc[[a,b]] = 1;
+                    }
+                }
+            }
+        }
+    },
+
+    drawCircles: function(c, edges, radius){
+        var acc = this.accumulators['circles'];
+        var context = c.context;
+
+        var threshold = this.threshold;
+        var points = Object.keys(acc);
+        for(var i = 0; i < points.length; i++){
+            var point = points[i];
+
+            // enough intersections, is probably circle
+            if(acc[point] > threshold){
+                trace(acc[point])
+                // draw circle
+                point = point.split(',')
+                var x = point[0]; 
+                var y = point[1];
+                context.beginPath();
+                context.strokeStyle = 'rgba(255,0,0,0.5)'
+                context.arc(y, x, radius, 0, 2*Math.PI);
+                context.stroke();
+            }
+        }
+    },
+
     drawLines: function(c, edges){
         // clear canvas
         // c.context.clearRect(0,0,c.canvas.width,c.canvas.height);
 
         // list of all r, deg pairs in accumulator
-        var acc = this.accumulator;
+        var acc = this.accumulators['lines'];
         var rhoRads = Object.keys(acc);
         var width = c.canvas.width;
         var height = c.canvas.height;
