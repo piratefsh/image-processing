@@ -113,7 +113,7 @@ EdgeThinner.prototype = {
         var context = this.c.context;
         context.clearRect(0,0,width,height);
         var count = 0;
-        context.fillStyle = 'rgb(255,0,0)';
+        context.fillStyle = 'rgb(100,100,100)';
         for(var x = 0; x < width; x++){
             for(var y = 0; y < height; y++){
                 var edgeIdx = (y * width) + x;

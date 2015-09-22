@@ -12,7 +12,7 @@ function HoughTransform(options){
         cos: {}
     }
 
-    for(var deg = 0; deg < 360; deg+=0.5){
+    for(var deg = 0; deg < 360; deg++){
         var rad = (deg * Math.PI / 180);
         this.tables.sin[rad] = Math.sin(rad);
         this.tables.cos[rad] = Math.cos(rad);
@@ -50,11 +50,15 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //detects lines and returns array with line locations
+        var count = 0;////
         for(var x = -centerX; x < centerX; x++){
             for(var y = -centerY; y < centerY; y++){
+                count++;////
                 var i = (x + centerX) * width + (y + centerY);
+                
                 // don't calculate for non-edges
-                if(edges[i] == undefined){
+                var e = edges[i];
+                if(e == undefined || e == 0){
                     continue;
                 }
 
@@ -77,12 +81,14 @@ HoughTransform.prototype = {
                 }
             }
         }
+
+        trace(count, edges.length, Object.keys(acc).length)////
         return acc;
     },
 
     drawLines: function(c, edges){
         // clear canvas
-        c.context.clearRect(0,0,c.canvas.width,c.canvas.height);
+        // c.context.clearRect(0,0,c.canvas.width,c.canvas.height);
 
         // list of all r, deg pairs in accumulator
         var acc = this.accumulator;
@@ -98,12 +104,11 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 50; //min num of points on line
-        var colorG = 0
+        var threshold = 40; //min num of points on line
         var colorG = 0
 
         // draw lines detected from accumulator data. takes in original image data
-        for(var i = 0; i < rhoRads.length; i++){
+        for(var i = rhoRads.length-1; i >=0 ; i--){
             // get xCoords associated with rho and radian pair
             var rd = rhoRads[i];
             var xCoords = acc[rd].x;
@@ -113,42 +118,22 @@ HoughTransform.prototype = {
             rd      = rd.split(',');
             var r   = rd[0];    //rho val
             var rad = rd[1];    //radian val
-            colorG++;    
 
             if(xCoords.length > threshold)
             {
                 // all possible xs
                 for(var j = 0; j < xCoords.length; j++){
-                    var x = xCoords[j];
-                    // var y = Math.floor((r - x * sin[rad]) / cos[rad]);
-                    var y = Math.floor((r - x * cos[rad]) / sin[rad]);
-
-                    var idx = x * width + y;
-                    // if(edges[idx])
-                    {
-                        c.context.fillStyle = 'rgb(255,' + colorG + ',0)';
-                        c.context.fillRect(y+centerX, x+centerY, 1, 1);
-                    }
-                }
-            }
-
-            if(yCoords.length > threshold)
-            {
-                // all possible xs
-                for(var j = 0; j < yCoords.length; j++){
-                    var x = yCoords[j];
-                    // var y = Math.floor((r - x * sin[rad]) / cos[rad]);
-                    var y = Math.floor((r - x * sin[rad]) / cos[rad]);
-
-                    var idx = x * width + y;
-                    // if(edges[idx])
-                    {
-                        c.context.fillStyle = 'rgb(0,' + colorG + ',255)';
-                        c.context.fillRect(x+centerY, y+centerX, 1, 1);
-                    }
+                    var x1 = xCoords[j];
+                    var y1 = Math.floor((r - x1 * cos[rad]) / sin[rad]);
+                    c.context.fillStyle = 'rgb(255,' + colorG + ',255)';
+                    c.context.fillRect(y1+centerY, x1+centerX, 1, 1);
+                    
+                    var x2 = yCoords[j];
+                    var y2 = Math.floor((r - x2 * sin[rad]) / cos[rad]);
+                    c.context.fillStyle = 'rgb(0,' + colorG + ',255)';
+                    c.context.fillRect(x2+centerY, y2+centerX, 1, 1);
                 }
             }
         }
-        trace('ok')
     }  
 }
