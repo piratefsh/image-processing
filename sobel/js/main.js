@@ -9,7 +9,7 @@ var options = {
         id: 'playground',
         width: 600,
         height: 400,
-        imageUrl: 'img/noguchi01.jpg'
+        imageUrl: 'img/flowers.jpg'
     }
 }
 var timer = {
