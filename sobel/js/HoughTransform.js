@@ -53,9 +53,8 @@ HoughTransform.prototype = {
         for(var x = -centerX; x < centerX; x++){
             for(var y = -centerY; y < centerY; y++){
                 var i = (x + centerX) * width + (y + centerY);
-                
                 // don't calculate for non-edges
-                if(i in edges && edges[i] == 0){
+                if(edges[i] == undefined){
                     continue;
                 }
 
@@ -85,7 +84,6 @@ HoughTransform.prototype = {
         // list of all r, deg pairs in accumulator
         var acc = this.accumulator;
         var rhoRads = Object.keys(acc);
-        var data = c.getDataArr();
         var width = c.canvas.width;
         var height = c.canvas.height;
         var centerX = Math.floor(width/2);
@@ -97,7 +95,7 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 200; //min num of points on line
+        var threshold = 50; //min num of points on line
         var colorG = 0
         var colorG = 0
 

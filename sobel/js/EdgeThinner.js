@@ -99,7 +99,7 @@ EdgeThinner.prototype = {
                             }
                         }
                         if(keepEdge){
-                            newEdges[centerIdx] = 1;
+                            newEdges[centerIdx] = e;
                         }
                     }
                 }
@@ -118,7 +118,7 @@ EdgeThinner.prototype = {
             for(var y = 0; y < height; y++){
                 var edgeIdx = (y * width) + x;
                 var e = edges[edgeIdx];
-                if(e === 1){
+                if(e){
                     context.fillRect(x, y, 1, 1);
                 }
             }

@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/3,
-        height: 600/3,
-        imageUrl: 'img/flowers.jpg'
+        width: 600,
+        height: 600,
+        imageUrl: 'img/noguchi01.jpg'
     }
 }
 var timer = {
@@ -20,7 +20,7 @@ var timer = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 90}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 50}),
     'houghLines': new HoughTransform({type: 'lines'}),
     'edgeThinner': new EdgeThinner()
 } 
@@ -51,7 +51,7 @@ function filterIt(canvas){
 
     // detect lines
     canvas.doHoughTransform(filters['houghLines']);
-    
+
     showTimeTaken();
 }
 
