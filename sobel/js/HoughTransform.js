@@ -3,7 +3,7 @@
 function HoughTransform(options){
     // given an array edges, use hough transform to detect lines/etc
     this.accumulator = {};
-    this.threshold = 100;
+    this.threshold = 80;
     this.type = options.type;
 
     // precalculate tables for sin, cos and radian values
@@ -42,6 +42,7 @@ HoughTransform.prototype = {
         var centerX = Math.ceil(width/2);
         var centerY = Math.ceil(height/2);
 
+        trace(centerX, centerY)
         var acc = this.accumulator;
 
         //use precalculated values
@@ -50,11 +51,9 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //detects lines and returns array with line locations
-        var count = 0;////
-        for(var x = -centerX; x < centerX; x++){
-            for(var y = -centerY; y < centerY; y++){
-                count++;////
-                var i = (x + centerX) * width + (y + centerY);
+        for(var x = 0; x < width; x++){
+            for(var y = 0; y < width; y++){
+                var i = x * width + y;
                 
                 // don't calculate for non-edges
                 var e = edges[i];
@@ -64,25 +63,28 @@ HoughTransform.prototype = {
 
                 // calculate r for thetas
                 for(var j = 0; j < radians.length; j++){
+                    //normalize x and y values with center as origin
+                    var xnorm = x - centerX;
+                    var ynorm = y - centerY;
                     var rad = radians[j];
-                    var r = Math.floor(x * cos[rad] + y * sin[rad]);
+                    var r = Math.floor(xnorm * cos[rad] + ynorm * sin[rad]);
 
                     // increment accumulator by 1 for every r found
                     if([r, rad] in acc){
-                        acc[[r, rad]].x.push(x);
-                        acc[[r, rad]].y.push(y);
+                        acc[[r, rad]].x.push(xnorm);
+                        acc[[r, rad]].y.push(ynorm);
                     }
                     else{
                         acc[[r, rad]] = {
-                            x: [x],
-                            y: [y]
+                            x: [xnorm],
+                            y: [ynorm]
                         }
                     }
                 }
             }
         }
 
-        trace(count, edges.length, Object.keys(acc).length)////
+        trace(edges.length, Object.keys(acc).length)////
         return acc;
     },
 
@@ -104,7 +106,7 @@ HoughTransform.prototype = {
         var radians = this.tables.radians;
 
         //parameters
-        var threshold = 40; //min num of points on line
+        var threshold = this.threshold; //min num of points on line
         var colorG = 0
 
         // draw lines detected from accumulator data. takes in original image data
