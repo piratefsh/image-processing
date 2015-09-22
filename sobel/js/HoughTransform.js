@@ -26,11 +26,8 @@ HoughTransform.prototype = {
     doTransform: function(c, edges){
         switch(this.type){
             case 'lines': 
-                // timer('start');
                 var acc = this.lines(c, edges);
                 this.drawLines(c, edges);
-                // timer('end');
-                trace('done hough')
                 break;
             case 'circles':
         }
@@ -42,7 +39,6 @@ HoughTransform.prototype = {
         var centerX = Math.ceil(width/2);
         var centerY = Math.ceil(height/2);
 
-        trace(centerX, centerY)
         var acc = this.accumulator;
 
         //use precalculated values
@@ -84,7 +80,6 @@ HoughTransform.prototype = {
             }
         }
 
-        trace(edges.length, Object.keys(acc).length)////
         return acc;
     },
 
