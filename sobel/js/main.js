@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 675,//600/2,
-        height: 450,///2,
-        imageUrl: 'img/quaters-160px.png'
+        width: 375*2,//600/2,
+        height: 238*2,///2,
+        imageUrl: 'img/braille.gif'
     }
 }
 var timer = {
@@ -20,9 +20,9 @@ var timer = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 120}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 180}),
     'houghLines': new HoughTransform({type: 'lines'}),
-    'houghCircles': new HoughTransform({type: 'circles', radius: 170, threshold: 35}),
+    'houghCircles': new HoughTransform({type: 'circles', radius: 8*2, threshold: 90}),
     'edgeThinner': new EdgeThinner()
 } 
 

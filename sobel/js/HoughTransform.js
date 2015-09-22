@@ -96,10 +96,11 @@ HoughTransform.prototype = {
     circles: function(c, edges, radius){
         var acc = this.accumulators['circles'];
         var width = c.canvas.width;
+        var height = c.canvas.height;
         // for each edge pixel
-        for(var x = 0; x < width; x++){
-            for(var y = 0; y < c.canvas.height; y++){
-                var e = edges[x*width + y];
+        for(var x = 0; x < height; x++){
+            for(var y = 0; y < width; y++){
+                var e = edges[x * width + y];
                 
                 // ignore non-edges
                 if(e == undefined || e == 0){
@@ -145,14 +146,13 @@ HoughTransform.prototype = {
 
             // enough intersections, is probably circle
             if(acc[point] > threshold){
-                trace(acc[point])
                 // draw circle
                 point = point.split(',')
-                var x = point[0]; 
-                var y = point[1];
+                var x = point[1];
+                var y = point[0]; 
                 context.beginPath();
-                context.strokeStyle = 'rgba(255,0,0,0.5)'
-                context.arc(y, x, radius, 0, 2*Math.PI);
+                context.strokeStyle = 'rgba(255,100,0,0.5)'
+                context.arc(x, y, radius, 0, 2*Math.PI);
                 context.stroke();
             }
         }
