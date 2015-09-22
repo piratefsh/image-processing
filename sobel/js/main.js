@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600,
-        height: 600,
+        width: 600/2,
+        height: 600/2,
         imageUrl: 'img/noguchi01.jpg'
     }
 }
@@ -20,7 +20,7 @@ var timer = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 50}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 100}),
     'houghLines': new HoughTransform({type: 'lines'}),
     'edgeThinner': new EdgeThinner()
 } 

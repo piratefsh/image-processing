@@ -81,6 +81,9 @@ HoughTransform.prototype = {
     },
 
     drawLines: function(c, edges){
+        // clear canvas
+        c.context.clearRect(0,0,c.canvas.width,c.canvas.height);
+
         // list of all r, deg pairs in accumulator
         var acc = this.accumulator;
         var rhoRads = Object.keys(acc);
