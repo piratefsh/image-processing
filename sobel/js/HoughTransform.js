@@ -7,7 +7,7 @@ function HoughTransform(options){
         'circles': {}
     };
 
-    this.threshold = 100;
+    this.threshold = options.threshold;
     this.type = options.type;
 
     // optional, for circle detection

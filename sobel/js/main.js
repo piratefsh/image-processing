@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 200,//600/2,
-        height: 200,///2,
-        imageUrl: 'img/circles-50px-01.png'
+        width: 675,//600/2,
+        height: 450,///2,
+        imageUrl: 'img/quaters-160px.png'
     }
 }
 var timer = {
@@ -20,9 +20,9 @@ var timer = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 100}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 120}),
     'houghLines': new HoughTransform({type: 'lines'}),
-    'houghCircles': new HoughTransform({type: 'circles', radius: 50}),
+    'houghCircles': new HoughTransform({type: 'circles', radius: 170, threshold: 35}),
     'edgeThinner': new EdgeThinner()
 } 
 
@@ -48,7 +48,7 @@ function filterIt(canvas){
     canvas.doEdgeDetect(filters['sobel']);
 
     // thin edges first
-    // canvas.doEdgeThinning(filters['edgeThinner']);
+    canvas.doEdgeThinning(filters['edgeThinner']);
 
     // detect lines
     // canvas.doHoughTransform(filters['houghLines']);
