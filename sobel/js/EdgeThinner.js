@@ -56,7 +56,7 @@ EdgeThinner.prototype = {
         this.edges = edges;
         this.directions = directions;
         this.createRotations();
-        // return this.nonMaxSupression()
+        return this.nonMaxSupression()
         return this.thin();
     },
 
@@ -188,8 +188,7 @@ EdgeThinner.prototype = {
             var tangent; 
             
             // get rounded down angle
-            var which = Math.abs(Math.floor(dir / (1/4*Math.PI)));
-
+            var which = Math.abs(Math.floor(dir / Math.PI/4));
             var nidx = [];
             switch(which){
                 case 0: //north-south, check east and west
@@ -203,17 +202,18 @@ EdgeThinner.prototype = {
                     nidx.push([x, y+1], [x, y-1]);
                     break;
                 case 3: //northest-southwest, check northwest-souteast
-                    nidx.push([x+1, y+1], [x-1, y-1]);
+                    nidx.push([x-1, y+1], [x+1, y-1]);
                     break;
                 default:
                     // invalid
+                    return;
             }
 
             // if neighbours are less, is center of edge
             var isMax = true;
             for(var n of nidx){ 
                 var idx = n[0] * width + n[1];
-                if(dir <= directions[idx]){
+                if(mag <= edges[idx]){
                     isMax = false;
                 }
             }
