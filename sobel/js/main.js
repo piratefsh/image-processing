@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 800,//600/2,
+        width: 600,//600/2,
         height: 600,///2,
-        imageUrl: 'img/braille.gif'
+        imageUrl: 'img/braille-page.jpg'
     }
 }
 var timer = {
@@ -20,9 +20,9 @@ var timer = {
 var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 90}),
+    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 140}),
     'houghLines': new HoughTransform({type: 'lines', threshold: 120}),
-    'houghCircles': new HoughTransform({type: 'circles', radius: 15, threshold: 70}),
+    'houghCircles': new HoughTransform({type: 'circles', radius: 6, threshold: 170}),
     'edgeThinner': new EdgeThinner()
 } 
 
@@ -52,7 +52,7 @@ function filterIt(canvas){
 
     // detect lines
     // canvas.doHoughTransform(filters['houghLines']);
-    // canvas.doHoughTransform(filters['houghCircles']);
+    canvas.doHoughTransform(filters['houghCircles']);
 
     showTimeTaken();
 }
