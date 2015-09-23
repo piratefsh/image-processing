@@ -21,7 +21,7 @@ var filters = {
     'greyscale': new Filter({type: 'greyscale'}),
     'gaussian': new Filter({type: 'gaussian'}),
     'sobel': new EdgeDetect({kernel: 'sobel', threshold: 180}),
-    'houghLines': new HoughTransform({type: 'lines'}),
+    'houghLines': new HoughTransform({type: 'lines', threshold: 50}),
     'houghCircles': new HoughTransform({type: 'circles', radius: 20, threshold: 20}),
     'edgeThinner': new EdgeThinner()
 } 
