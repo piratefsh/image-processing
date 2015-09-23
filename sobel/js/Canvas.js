@@ -89,18 +89,27 @@ Canvas.prototype = {
         f.doFilter(this);
     },
 
-    onDetectFinished: function(magnitudes){
+    onDetectFinished: function(magnitudes, directions){
         // pad missing edges. edge detected image will be smaller than
         // original because cannot determine edges at image edges
         var dataLength = this.canvas.width * this.canvas.height * 4;
+        
+        // keep edge and direction magnitude for each pixel
         this.edges = new Array(dataLength/4);
+        this.directions = new Array(dataLength/4);
+
         var edges = new Array(dataLength);
         var i = 0;
+
         while(i < dataLength){
             edges[i] =  0;
             if(!(i % 4)) {
               var m = magnitudes[i / 4];
-              this.edges[i/4] = m;
+              var d = directions[i / 4];
+
+              this.edges[i/4]       = m;
+              this.directions[i/4]  = d;
+
               if(m != 0) {
                 edges[i - 1] = m / 4;
               }
@@ -116,13 +125,15 @@ Canvas.prototype = {
 
     doEdgeDetect: function(ed){
         // do detection with set callbacks
-        var magnitudes = ed.doDetect(this)
-        this.onDetectFinished(magnitudes)
+        var results = ed.doDetect(this);
+        var magnitudes = results[0];
+        var directions = results[1];
+        this.onDetectFinished(magnitudes, directions);
     },
 
     doEdgeThinning: function(et, onFinished){
         if(this.edges && this.edges.length > 0){
-            this.edges = et.doThinning(this, this.edges);
+            this.edges = et.doThinning(this, this.edges, this.directions);
         }
         else{
             error('bad edges')

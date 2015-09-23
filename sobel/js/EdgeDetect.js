@@ -18,7 +18,9 @@ EdgeDetect.prototype = {
     doDetect: function(a, b, c){
         switch(this.options.kernel){
             case 'sobel':
-                return this.sobel(a, b, c);
+                var mags = this.sobel(a, b, c)[0]; // return magnitudes only
+                var dirs = this.sobel(a, b, c)[1];
+                return [mags, dirs];
             default:
                 error('No such edge detector exists!')
                 return;
@@ -50,7 +52,9 @@ EdgeDetect.prototype = {
         var SQRT = Math.sqrt;
 
         var length = data.length - maxPixelOffset
-        var magnitudes = new Array(length)
+        var magnitudes = new Array(length);
+        var directions = new Array(length);
+        
         for(var i = 0; i < length; i++){
             // sum of each pixel * kernel value
             var sumX = 0, sumY = 0;
@@ -65,11 +69,14 @@ EdgeDetect.prototype = {
                 }
             }
             var mag = SQRT(sumX*sumX + sumY*sumY);
+            var direction = Math.atan2(sumX,sumY);
 
+            // compare neighbours
             // set magnitude to 0 if doesn't exceed threshold, else set to magnitude
             magnitudes[i] = mag > this.options.threshold? mag : 0;
+            directions[i] = mag > this.options.threshold? direction : 0;
         }
 
-        return magnitudes;
+        return [magnitudes, directions];
     }
 }
