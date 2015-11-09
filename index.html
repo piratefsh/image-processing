@@ -48,77 +48,82 @@
             <!--/.navbar-collapse --> </div>
         </nav>
 
-        <div class="container">
-          <div class="col-sm-8">
-            <canvas id="playground"></canvas>
-            <div>
-              <button id="btn-snapshot" class="btn btn-primary"> <i class="glyphicon glyphicon-camera"></i>
-              </button>
-            </div>
-            <div>
+        <div class="main container">
+          <div class="row">
+            <div class="col-sm-12 col-md-8" id="canvas-container">
+              <canvas id="playground"></canvas>
               Filter time taken:
               <span id="filter-time"></span>
             </div>
+
+            <div class="col-sm-12 col-md-4">
+              <video width="200" id="user-video" autoplay></video>
+
+              <h2>Filters</h2>
+              <form class="controls">
+                <fieldset class="form-group">
+                  <input type="radio" name="process" value="greyscale" id="greyscale"/>
+                  <label for="greyscale" class="radio-inline">Greyscale</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input type="radio" name="process" value="gaussian-blur"/>
+                  <label class="radio-inline">Gaussian blur</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input type="radio" name="process"value="edge-detect"/>
+                  <label class="radio-inline">Edge detect (Sobel)</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input type="radio" name="process"value="edge-thin"/>
+                  <label class="radio-inline">Non-maximal supression edge thinning</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input type="radio" name="process"value="line-detect"/>
+                  <label class="radio-inline">Hough line detection</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <input type="radio" name="process"value="circle-detect"/>
+                  <label class="radio-inline">Hough circle detection</label>
+                </fieldset>
+
+                <fieldset class="form-group">
+                  <button id="btn-snapshot" class="btn btn-primary">Download as .png</button>
+                </fieldset>
+              </form>
+            </div>
           </div>
 
-          <div class="col-sm-4">
-            <form class="form">
-              <fieldset>
-                <input type="radio" name="process" value="greyscale"/>
-                <label>Greyscale</label>
-              </fieldset>
-              <fieldset>
-                <input type="radio" name="process" value="gaussian-blur"/>
-                <label>Gaussian blur</label>
-              </fieldset>
-              <fieldset>
-                <input type="radio" name="process"value="edge-detect"/>
-                <label>Edge detect (Sobel)</label>
-              </fieldset>
-              <fieldset>
-                <input type="radio" name="process"value="edge-thin"/>
-                <label>Non-maximal supression edge thinning</label>
-              </fieldset>
-              <fieldset>
-                <input type="radio" name="process"value="line-detect"/>
-                <label>Hough line detection</label>
-              </fieldset>
-              <fieldset>
-                <input type="radio" name="process"value="circle-detect"/>
-                <label>Hough circle detection</label>
-              </fieldset>
-            </form>
-          </form>
-
         </div>
-         <div class="col-sm-4">
-        <video width="200" id="user-video" autoplay></canvas>
+
       </div>
-     
+
+      <footer>
+        <div class="container">
+          <p>
+            Experiments at the Recurse Center by
+            <a href="https://github.com/piratefsh/image-processing">Sher Minn</a>
+            .
+          </p>
+        </div>
+      </footer>
     </div>
+    <!-- /container -->
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
-    <footer>
-      <div class="container">
-        <p>
-          Experiments at the Recurse Center by
-          <a href="https://github.com/piratefsh/image-processing">Sher Minn</a>
-          .
-        </p>
-      </div>
-    </footer>
-  </div>
-  <!-- /container -->
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+  <script src="js/vendor/bootstrap.min.js"></script>
 
-<script src="js/vendor/bootstrap.min.js"></script>
-
-<script src="//localhost:9011/livereload.js"></script>
-<script src="js/helpers.js"></script>
-<script src="js/Filter.js"></script>
-<script src="js/EdgeDetect.js"></script>
-<script src="js/Canvas.js"></script>
-<script src="js/HoughTransform.js"></script>
-<script src="js/EdgeThinner.js"></script>
-<script src="js/main.js"></script>
+  <script src="//localhost:9011/livereload.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/Filter.js"></script>
+  <script src="js/EdgeDetect.js"></script>
+  <script src="js/Canvas.js"></script>
+  <script src="js/HoughTransform.js"></script>
+  <script src="js/EdgeThinner.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

@@ -7,8 +7,8 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600/2,
-        height: 450/2,
+        width: 500,
+        height: 350,
         imageUrl: 'img/lines.png'
     }
 }
@@ -27,6 +27,10 @@ var filters = {
 } 
 
 function init(){
+
+    var container = document.getElementById('canvas-container')
+    options.canvas.width = (container.clientWidth - 30);
+    options.canvas.height = options.canvas.width * 0.75
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
     // pipeImage(canvas);
@@ -41,6 +45,7 @@ function init(){
 }
 
 function filterIt(canvas){
+    timer.start = new Date()
     // simplify image by making it greyscale
     canvas.applyFilter(filters['greyscale']);
     

@@ -1,8 +1,13 @@
 #playground, #user-video{
     border: 1px solid #ccc;
+}
+.main{
     margin-top: 40px;
 }
 
+.controls{
+    margin-top: 20px;
+}
 footer{
     margin-top: 40px;
 }
