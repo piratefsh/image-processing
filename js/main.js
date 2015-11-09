@@ -28,6 +28,8 @@ var filters = {
     edgeThinner: new EdgeThinner(),
 };
 
+var thresholdInput = document.getElementById('edge-detect-threshold');
+
 function init() {
 
     var container = document.getElementById('canvas-container');
@@ -50,20 +52,24 @@ function init() {
 
     // set listener for all radio buttons for selecting filter
     var radioBtns = document.querySelector('.filter');
-    for (var rb of radioBtns) {
-        rb.onchange = function() {
+    for (var i in radioBtns) {
+        radioBtns[i].onchange = function() {
             pauseVideo = false;
-            filterIt();
+            filterIt(canvas);
         };
     }
+
+    thresholdInput.onchange = function() {
+        filterIt(canvas);
+    };
 }
 
 function filterIt(canvas) {
     timer.start = new Date();
 
-    // simplify image by making it greyscale
-    var filter = document.getElementById('controls').elements['filter'].value;
-    trace(filter);
+    // get filter
+    var filter =  document.getElementById('controls').elements['filter'].value;
+
     switch (filter){
         case 'greyscale': {
             canvas.applyFilter(filters['greyscale']);
@@ -76,6 +82,8 @@ function filterIt(canvas) {
         }
 
         case 'edge-detect': {
+            var threshold = thresholdInput.value > 0 ? thresholdInput.value : 100;
+            filters['sobel'].options.threshold = threshold;
             canvas.applyFilter(filters['greyscale']);
             canvas.doEdgeDetect(filters['sobel']);
             break;
