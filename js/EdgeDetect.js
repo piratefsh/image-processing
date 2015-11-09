@@ -12,9 +12,6 @@ function EdgeDetect(opt){
                 [1, 2, 1]]
         }
     }
-    this.cache = {
-        'atan': {}
-    }
 }
 
 EdgeDetect.prototype = {

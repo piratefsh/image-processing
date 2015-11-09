@@ -43,7 +43,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#">Image Processing</a>
+              <a class="navbar-brand" href="#">Image filtering</a>
             </div>
             <!--/.navbar-collapse --> </div>
         </nav>
@@ -60,39 +60,39 @@
               <video width="200" id="user-video" autoplay></video>
 
               <h2>Filters</h2>
-              <form class="controls">
+              <form  id="controls">
                 <fieldset class="form-group">
-                  <input type="radio" name="process" value="greyscale" id="greyscale"/>
+                  <input type="radio" name="filter" value="greyscale" id="greyscale" checked/>
                   <label for="greyscale" class="radio-inline">Greyscale</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="process" value="gaussian-blur"/>
+                  <input type="radio" name="filter" value="gaussian-blur"/>
                   <label class="radio-inline">Gaussian blur</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="process"value="edge-detect"/>
+                  <input type="radio" name="filter"value="edge-detect"/>
                   <label class="radio-inline">Edge detect (Sobel)</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="process"value="edge-thin"/>
+                  <input type="radio" name="filter"value="edge-thin"/>
                   <label class="radio-inline">Non-maximal supression edge thinning</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="process"value="line-detect"/>
-                  <label class="radio-inline">Hough line detection</label>
+                  <input type="radio" name="filter"value="line-detect"/>
+                  <label class="radio-inline">Hough line detection <i class="glyphicon glyphicon-pause"></i></label>
                 </fieldset>
 
-                <fieldset class="form-group">
-                  <input type="radio" name="process"value="circle-detect"/>
-                  <label class="radio-inline">Hough circle detection</label>
-                </fieldset>
+                <!-- <fieldset class="form-group">
+                  <input type="radio" name="filter"value="circle-detect"/>
+                  <label class="radio-inline">Hough circle detection <i class="glyphicon glyphicon-pause"></i></label>
+                </fieldset> -->
 
                 <fieldset class="form-group">
-                  <button id="btn-snapshot" class="btn btn-primary">Download as .png</button>
+                  <button id="btn-snapshot" class="btn btn-default">Download as .png</button>
                 </fieldset>
               </form>
             </div>
@@ -106,7 +106,7 @@
         <div class="container">
           <p>
             Experiments at the Recurse Center by
-            <a href="https://github.com/piratefsh/image-processing">Sher Minn</a>
+            <a href="https://github.com/piratefsh/image-filtering">Sher Minn</a>
             .
           </p>
         </div>

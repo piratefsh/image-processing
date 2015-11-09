@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 // globals
 var canvas;
@@ -9,72 +9,124 @@ var options = {
         id: 'playground',
         width: 500,
         height: 350,
-        imageUrl: 'img/lines.png'
-    }
-}
+        imageUrl: 'img/lines.png',
+    },
+};
 var timer = {
-    start: new Date(), 
-    end: null
-}
+    start: new Date(),
+    end: null,
+};
+
+var pauseVideo = false;
 
 var filters = {
-    'greyscale': new Filter({type: 'greyscale'}),
-    'gaussian': new Filter({type: 'gaussian'}),
-    'sobel': new EdgeDetect({kernel: 'sobel', threshold: 140}),
-    'houghLines': new HoughTransform({type: 'lines', threshold: 120}),
-    'houghCircles': new HoughTransform({type: 'circles', radius: 6, threshold: 170}),
-    'edgeThinner': new EdgeThinner()
-} 
+    greyscale: new Filter({type: 'greyscale'}),
+    gaussian: new Filter({type: 'gaussian'}),
+    sobel: new EdgeDetect({kernel: 'sobel', threshold: 100}),
+    houghLines: new HoughTransform({type: 'lines', threshold: 120}),
+    houghCircles: new HoughTransform({type: 'circles', radius: 6, threshold: 170}),
+    edgeThinner: new EdgeThinner(),
+};
 
-function init(){
+function init() {
 
-    var container = document.getElementById('canvas-container')
+    var container = document.getElementById('canvas-container');
     options.canvas.width = (container.clientWidth - 30);
-    options.canvas.height = options.canvas.width * 0.75
-    // create canvas and add image to it 
+    options.canvas.height = options.canvas.width * 0.75;
+
+    // create canvas and add image/video frames to it
     canvas = new Canvas(options.canvas);
-    // pipeImage(canvas);
     pipeVideo(canvas);
 
-    //set snapshot button
+    // pipeImage(canvas);
+
+    // set snapshot button
     var btnSnapshot = document.getElementById('btn-snapshot');
-    btnSnapshot.onclick = function(){
-        var filename = (new Date()).toString() + "-edge-detect.jpg";
+    btnSnapshot.onclick = function(e) {
+        e.preventDefault();
+        var filename = (new Date()).toString() + '-edge-detect.jpg';
         canvas.saveState(filename);
+    };
+
+    // set listener for all radio buttons for selecting filter
+    var radioBtns = document.querySelector('.filter');
+    for (var rb of radioBtns) {
+        rb.onchange = function() {
+            pauseVideo = false;
+            filterIt();
+        };
     }
 }
 
-function filterIt(canvas){
-    timer.start = new Date()
+function filterIt(canvas) {
+    timer.start = new Date();
+
     // simplify image by making it greyscale
-    canvas.applyFilter(filters['greyscale']);
-    
-    // canvas.applyFilter(filters['gaussian']);
-    canvas.doEdgeDetect(filters['sobel']);
+    var filter = document.getElementById('controls').elements['filter'].value;
+    trace(filter);
+    switch (filter){
+        case 'greyscale': {
+            canvas.applyFilter(filters['greyscale']);
+            break;
+        }
 
-    // thin edges first
-    // canvas.doEdgeThinning(filters['edgeThinner']);
+        case 'gaussian-blur': {
+            canvas.applyFilter(filters['gaussian']);
+            break;
+        }
 
-    // detect lines
-    // canvas.doHoughTransform(filters['houghLines']);
-    // canvas.doHoughTransform(filters['houghCircles']);
+        case 'edge-detect': {
+            canvas.applyFilter(filters['greyscale']);
+            canvas.doEdgeDetect(filters['sobel']);
+            break;
+        }
+
+        case 'edge-thin' : {
+            canvas.applyFilter(filters['greyscale']);
+            canvas.doEdgeDetect(filters['sobel']);
+            canvas.doEdgeThinning(filters['edgeThinner']);
+            break;
+        }
+
+        case 'line-detect' : {
+            pauseVideo = true;
+            canvas.applyFilter(filters['greyscale']);
+            canvas.doEdgeDetect(filters['sobel']);
+            canvas.doEdgeThinning(filters['edgeThinner']);
+            canvas.doHoughTransform(filters['houghLines']);
+            break;
+        }
+
+        case 'circle-detect' : {
+            pauseVideo = true;
+            canvas.applyFilter(filters['greyscale']);
+            canvas.doEdgeDetect(filters['sobel']);
+            canvas.doEdgeThinning(filters['edgeThinner']);
+            canvas.doHoughTransform(filters['houghCircles']);
+            break;
+        }
+
+        default : {
+            trace('Filter does not exist: ' + filter);
+        }
+    }
 
     showTimeTaken();
 }
 
-function showTimeTaken(){
+function showTimeTaken() {
     timer.end = new Date();
     document.getElementById('filter-time').innerHTML = timer.end - timer.start + ' ms';
 }
 
-function pipeImage(c){
+function pipeImage(c) {
     // pipe an image to canvas
-    c.drawImage(options.canvas.imageUrl, function(){
+    c.drawImage(options.canvas.imageUrl, function() {
         filterIt(c);
     });
 }
 
-function pipeVideo(c){
+function pipeVideo(c) {
     // pipe an a video stream to canvas
     navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
     navigator.webkitGetUserMedia || navigator.msGetUserMedia;
@@ -85,16 +137,18 @@ function pipeVideo(c){
         video.src = window.URL.createObjectURL(stream);
         video.addEventListener('play', function() {
             setInterval(function() {
-                if (video.paused || video.ended){
+                if (video.paused || video.ended) {
                     return;
-                } 
+                }
 
-                c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
-                filterIt(c);
+                if (!pauseVideo) {
+                    c.context.drawImage(video, 0, 0, c.dimensions.width, c.dimensions.height);
+                    filterIt(c);
+                }
 
             }, 10);
         }, false);
-    }, function(e){error(e)})
+    }, function(e) {error(e);});
 }
 
 init();
