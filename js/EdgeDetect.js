@@ -12,14 +12,18 @@ function EdgeDetect(opt){
                 [1, 2, 1]]
         }
     }
+    this.cache = {
+        atan: {}
+    }
 }
 
 EdgeDetect.prototype = {
-    doDetect: function(a, b, c){
+    doDetect: function(canvas){
         switch(this.options.kernel){
             case 'sobel':
-                var mags = this.sobel(a, b, c)[0]; // return magnitudes only
-                var dirs = this.sobel(a, b, c)[1];
+                var res = this.sobel(canvas); // return magnitudes only
+                var mags = res[0]
+                var dirs = res[1]
                 return [mags, dirs];
             default:
                 error('No such edge detector exists!')
@@ -27,7 +31,7 @@ EdgeDetect.prototype = {
         }
     },
 
-    sobel: function(c, onDoneConvoluting){
+    sobel: function(c){
         // var s = new Date();
 
         var context = c.context;
@@ -69,7 +73,10 @@ EdgeDetect.prototype = {
                 }
             }
             var mag = SQRT(sumX*sumX + sumY*sumY);
-            var direction = Math.atan2(sumX,sumY);
+            if (![sumX,sumY] in this.cache.atan){
+                this.cache.atan[[sumX,sumY]] = Math.atan2(sumX,sumY);
+            }
+            var direction = this.cache.atan[[sumX,sumY]];
 
             // compare neighbours
             // set magnitude to 0 if doesn't exceed threshold, else set to magnitude
