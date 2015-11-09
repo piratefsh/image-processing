@@ -7,9 +7,9 @@ var canvas;
 var options = {
     canvas: {
         id: 'playground',
-        width: 600,//600/2,
-        height: 600,///2,
-        imageUrl: 'img/braille-page.jpg'
+        width: 600/2,
+        height: 450/2,
+        imageUrl: 'img/lines.png'
     }
 }
 var timer = {
@@ -29,8 +29,8 @@ var filters = {
 function init(){
     // create canvas and add image to it 
     canvas = new Canvas(options.canvas);
-    pipeImage(canvas);
-    // pipeVideo(canvas);
+    // pipeImage(canvas);
+    pipeVideo(canvas);
 
     //set snapshot button
     var btnSnapshot = document.getElementById('btn-snapshot');
@@ -44,15 +44,15 @@ function filterIt(canvas){
     // simplify image by making it greyscale
     canvas.applyFilter(filters['greyscale']);
     
-    canvas.applyFilter(filters['gaussian']);
+    // canvas.applyFilter(filters['gaussian']);
     canvas.doEdgeDetect(filters['sobel']);
 
     // thin edges first
-    canvas.doEdgeThinning(filters['edgeThinner']);
+    // canvas.doEdgeThinning(filters['edgeThinner']);
 
     // detect lines
     // canvas.doHoughTransform(filters['houghLines']);
-    canvas.doHoughTransform(filters['houghCircles']);
+    // canvas.doHoughTransform(filters['houghCircles']);
 
     showTimeTaken();
 }
