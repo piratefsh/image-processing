@@ -1,20 +1,22 @@
 # Image Processing Experiments
 
-Various implementations of image processing algorithms for study. All done in vanilla Javascript.
+Javacript implementations of image processing algorithms for study.
 
-Contains:
+Algorithms implemented:
+* Greyscale
+* Gaussian Blur
+* Edge Detection
+* Edge Thinning (non-max supression)
+* Hough Transform line detection
 
-* Sobel edge detector [demo](https://piratefsh.github.io/image-processing/sobel/index.html) (p.s., it's slow, so wait for a bit)
-* And more stuff coming soon, maybe?
+## [Demo](http://piratefsh.github.io/image-processing)
 
-## To run stuff locally
+## Development
 ```
 npm install
 grunt serve
+grunt watch
 ```
 
-App should be serving at [http://localhost:9000](http://localhost:9000) from which you can navigate to the respective files.
+App should be serving at [http://localhost:9000](http://localhost:9000)
 
-e.g to get to Sobel edge detector, go to http://localhost:9000/sobel/index.html
-
-##
