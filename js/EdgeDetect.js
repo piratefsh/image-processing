@@ -13,7 +13,7 @@ function EdgeDetect(opt){
         }
     }
     this.cache = {
-        atan: {}
+        'atan': {}
     }
 }
 
@@ -32,8 +32,6 @@ EdgeDetect.prototype = {
     },
 
     sobel: function(c){
-        // var s = new Date();
-
         var context = c.context;
         var canvas = c.canvas;
 
@@ -54,6 +52,7 @@ EdgeDetect.prototype = {
 
         // optimizations
         var SQRT = Math.sqrt;
+        var ATAN2 =  Math.atan2;
 
         var length = data.length - maxPixelOffset
         var magnitudes = new Array(length);
@@ -73,17 +72,12 @@ EdgeDetect.prototype = {
                 }
             }
             var mag = SQRT(sumX*sumX + sumY*sumY);
-            if (![sumX,sumY] in this.cache.atan){
-                this.cache.atan[[sumX,sumY]] = Math.atan2(sumX,sumY);
-            }
-            var direction = this.cache.atan[[sumX,sumY]];
-
+            var direction = ATAN2(sumX,sumY);
             // compare neighbours
             // set magnitude to 0 if doesn't exceed threshold, else set to magnitude
             magnitudes[i] = mag > this.options.threshold? mag : 0;
             directions[i] = mag > this.options.threshold? direction : 0;
         }
-
         return [magnitudes, directions];
     }
 }
