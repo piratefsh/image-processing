@@ -67,24 +67,24 @@
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="filter" value="gaussian-blur"/>
-                  <label class="radio-inline">Gaussian blur</label>
+                  <input type="radio" name="filter" value="gaussian-blur" id="gaussian-blur"/>
+                  <label for="gaussian-blur" class="radio-inline">Gaussian blur</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="filter"value="edge-detect"/>
-                  <label class="radio-inline">Edge detect (Sobel)</label>
-                  <input type="number" id="edge-detect-threshold" value="100"/>
+                  <input type="radio" name="filter" value="edge-detect" id="edge-detect"/>
+                  <label for="edge-detect" class="radio-inline">Edge detect (Sobel)</label>
+                  <input type="number" id="edge-detect-threshold" value="100" placeholder="threshold"/>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="filter"value="edge-thin"/>
-                  <label class="radio-inline">Non-maximal supression edge thinning</label>
+                  <input type="radio" name="filter" value="edge-thin" id="edge-thin"/>
+                  <label for="edge-thin" class="radio-inline">Non-maximal supression edge thinning</label>
                 </fieldset>
 
                 <fieldset class="form-group">
-                  <input type="radio" name="filter"value="line-detect"/>
-                  <label class="radio-inline">Hough line detection <i class="glyphicon glyphicon-pause"></i></label>
+                  <input type="radio" name="filter" value="line-detect" id="line-detect"/>
+                  <label for="line-detect" class="radio-inline">Hough line detection <i class="glyphicon glyphicon-pause"></i></label>
                 </fieldset>
 
                 <!-- <fieldset class="form-group">
