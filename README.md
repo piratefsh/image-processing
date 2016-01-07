@@ -9,7 +9,7 @@ Algorithms implemented:
 * Edge Thinning (non-max supression)
 * Hough Transform line detection
 
-## [Demo](http://piratefsh.github.io/image-processing)
+## [Demo](https://piratefsh.github.io/image-processing)
 
 ## Development
 ```
