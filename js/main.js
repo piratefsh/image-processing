@@ -142,7 +142,15 @@ function pipeVideo(c) {
         video: true,
     }, function(stream) {
         var video = document.getElementById('user-video');
-        video.srcObject = stream;
+        if(video.srcObject !== undefined){
+            video.srcObject = stream
+        } else {
+            try {
+                video.src = compatibility.URL.createObjectURL(stream);
+            } catch (error) {
+                video.src = stream;
+            }
+        }
         video.addEventListener('play', function() {
             setInterval(function() {
                 if (video.paused || video.ended) {
