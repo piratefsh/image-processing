@@ -142,7 +142,7 @@ function pipeVideo(c) {
         video: true,
     }, function(stream) {
         var video = document.getElementById('user-video');
-        video.src = window.URL.createObjectURL(stream);
+        video.srcObject = stream;
         video.addEventListener('play', function() {
             setInterval(function() {
                 if (video.paused || video.ended) {
